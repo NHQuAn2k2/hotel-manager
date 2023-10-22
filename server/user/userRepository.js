@@ -3,7 +3,7 @@ module.exports = {
   findAll: (callback) => {
     db.query("SELECT * FROM student", (err, result) => {
       if (err) throw err;
-      callback(err, result);
+      callback(result);
     });
   },
   findById: (id) => {},

@@ -6,8 +6,7 @@ const app = express();
 const port = 8080;
 app.use(cors());
 app.get("/", (req, res) => {
-  userRepository.findAll((err, data) => {
-    if (err) throw err;
+  userRepository.findAll((data) => {
     res.json(data);
   });
 });
