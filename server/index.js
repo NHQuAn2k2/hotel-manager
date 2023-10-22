@@ -4,9 +4,6 @@ const mysql = require("mysql2");
 const app = express();
 const port = 8080;
 app.use(cors());
-app.get("/", (req, res) => {
-  res.send("hello world");
-});
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -15,11 +12,16 @@ const db = mysql.createConnection({
 });
 db.connect((error) => {
   if (error) {
-    console.log(error);
-    return;
+    throw error;
   }
   console.log("Connected!");
 });
+app.get("/", (req, res) => {
+  db.query("SELECT * FROM student", (err, result) => {
+    if (err) throw err;
+    res.json(result);
+  });
+});
 app.listen(port, () => {
-  console.log(`server is running on port: ${port}`);
+  console.log(`server is running on localhost:${port}`);
 });
