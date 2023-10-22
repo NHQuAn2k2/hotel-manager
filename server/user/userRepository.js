@@ -1,5 +1,11 @@
+const db = require("../mysql").getDb();
 module.exports = {
-  findAll: () => {},
+  findAll: (callback) => {
+    db.query("SELECT * FROM student", (err, result) => {
+      if (err) throw err;
+      callback(result);
+    });
+  },
   findById: (id) => {},
   remove: () => {},
   save: (user) => {},
