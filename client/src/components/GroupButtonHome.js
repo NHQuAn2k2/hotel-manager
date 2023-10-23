@@ -15,6 +15,7 @@ export default function GroupButtonHome() {
     <Box marginBottom={10} display={"flex"} alignItems={"center"} gap={5}>
       {groups.map((group) => (
         <Button
+          key={group.text}
           variant="outlined"
           sx={{
             color: "white",
