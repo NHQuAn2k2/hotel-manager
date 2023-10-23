@@ -16,9 +16,10 @@ import {
   Typography,
 } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import GroupButtonHome from "../components/GroupButtonHome";
+import GroupButtonHome from "../components/home/GroupButtonHome";
 import { cities } from "../utils/constant";
 import styled from "styled-components";
+import EndDowHome from "../components/home/EndDowHome";
 const CalendarCustom = styled(Calendar)`
   width: 100%;
   border: none;
@@ -107,90 +108,96 @@ export default function HomePage() {
         </Box>
       </Paper>
       <Box sx={{ paddingX: 20, paddingY: 3 }}>
-        <Grid container spacing={3}>
-          <Grid item xs={6}>
-            <FormControl fullWidth>
-              <InputLabel>chọn khu vực của bạn</InputLabel>
-              <Select
-                value={city}
-                onChange={handleChange}
-                label="chọn khu vực của bạn"
-              >
-                <MenuItem value={""}>
-                  <em>None</em>
-                </MenuItem>
-                {cities.map((city) => (
-                  <MenuItem key={city} value={city}>
-                    {city}
+        <Box marginBottom={5}>
+          <Grid marginBottom={2} container spacing={3}>
+            <Grid item xs={6}>
+              <FormControl fullWidth>
+                <InputLabel>chọn khu vực của bạn</InputLabel>
+                <Select
+                  value={city}
+                  onChange={handleChange}
+                  label="chọn khu vực của bạn"
+                >
+                  <MenuItem value={""}>
+                    <em>None</em>
                   </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={6}>
-            <Paper
-              sx={{
-                padding: 2,
-                display: "flex",
-                flexDirection: "column",
-                rowGap: 2,
-              }}
-            >
-              <Box
-                display={"flex"}
-                justifyContent={"space-between"}
-                alignItems={"center"}
+                  {cities.map((city) => (
+                    <MenuItem key={city} value={city}>
+                      {city}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={6}>
+              <Paper
+                sx={{
+                  padding: 2,
+                  display: "flex",
+                  flexDirection: "column",
+                  rowGap: 2,
+                }}
               >
-                <Typography>Người lớn:</Typography>
-                <ButtonGroup variant="outlined">
-                  <Button>-</Button>
-                  <Button>0</Button>
-                  <Button>+</Button>
-                </ButtonGroup>
-              </Box>
-              <Box
-                display={"flex"}
-                justifyContent={"space-between"}
-                alignItems={"center"}
-              >
-                <Typography>Trẻ em:</Typography>
-                <ButtonGroup variant="outlined">
-                  <Button>-</Button>
-                  <Button>0</Button>
-                  <Button>+</Button>
-                </ButtonGroup>
-              </Box>
-              <Box
-                display={"flex"}
-                justifyContent={"space-between"}
-                alignItems={"center"}
-              >
-                <Typography>Phòng:</Typography>
-                <ButtonGroup variant="outlined">
-                  <Button>-</Button>
-                  <Button>0</Button>
-                  <Button>+</Button>
-                </ButtonGroup>
-              </Box>
-            </Paper>
+                <Box
+                  display={"flex"}
+                  justifyContent={"space-between"}
+                  alignItems={"center"}
+                >
+                  <Typography>Người lớn:</Typography>
+                  <ButtonGroup variant="outlined">
+                    <Button>-</Button>
+                    <Button>0</Button>
+                    <Button>+</Button>
+                  </ButtonGroup>
+                </Box>
+                <Box
+                  display={"flex"}
+                  justifyContent={"space-between"}
+                  alignItems={"center"}
+                >
+                  <Typography>Trẻ em:</Typography>
+                  <ButtonGroup variant="outlined">
+                    <Button>-</Button>
+                    <Button>0</Button>
+                    <Button>+</Button>
+                  </ButtonGroup>
+                </Box>
+                <Box
+                  display={"flex"}
+                  justifyContent={"space-between"}
+                  alignItems={"center"}
+                >
+                  <Typography>Phòng:</Typography>
+                  <ButtonGroup variant="outlined">
+                    <Button>-</Button>
+                    <Button>0</Button>
+                    <Button>+</Button>
+                  </ButtonGroup>
+                </Box>
+              </Paper>
+            </Grid>
+            <Grid item xs={6}>
+              <Paper sx={{ padding: 2, height: "415px" }}>
+                <Typography fontWeight={"bold"} marginBottom={2}>
+                  Ngày nhận phòng:
+                </Typography>
+                <CalendarCustom />
+              </Paper>
+            </Grid>
+            <Grid item xs={6}>
+              <Paper sx={{ padding: 2, height: "415px" }}>
+                <Typography fontWeight={"bold"} marginBottom={2}>
+                  Ngày trả phòng:
+                </Typography>
+                <CalendarCustom />
+              </Paper>
+            </Grid>
           </Grid>
-          <Grid item xs={6}>
-            <Paper sx={{ padding: 2 }}>
-              <Typography fontWeight={"bold"} marginBottom={2}>
-                Ngày nhận phòng:
-              </Typography>
-              <CalendarCustom />
-            </Paper>
-          </Grid>
-          <Grid item xs={6}>
-            <Paper sx={{ padding: 2 }}>
-              <Typography fontWeight={"bold"} marginBottom={2}>
-                Ngày trả phòng:
-              </Typography>
-              <CalendarCustom />
-            </Paper>
-          </Grid>
-        </Grid>
+          <Button sx={{ width: "20%" }} variant="contained">
+            Tìm
+          </Button>
+        </Box>
+        <EndDowHome />
       </Box>
     </>
   );
