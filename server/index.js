@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-require("./mysql").connect("localhost", "root", "123456", "employees");
+require("./mysqlConfig").connect("localhost", "root", "123456", "employees");
 const userRepository = require("./user/userRepository");
 const app = express();
 const port = 8080;
