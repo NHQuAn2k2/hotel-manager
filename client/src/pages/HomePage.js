@@ -20,6 +20,7 @@ import GroupButtonHome from "../components/home/GroupButtonHome";
 import { cities } from "../utils/constant";
 import styled from "styled-components";
 import EndDowHome from "../components/home/EndDowHome";
+import PopularHome from "../components/home/PopularHome";
 const CalendarCustom = styled(Calendar)`
   width: 100%;
   border: none;
@@ -107,8 +108,16 @@ export default function HomePage() {
           </Typography>
         </Box>
       </Paper>
-      <Box sx={{ paddingX: 20, paddingY: 3 }}>
-        <Box marginBottom={5}>
+      <Box
+        sx={{
+          paddingX: 20,
+          paddingY: 3,
+          display: "flex",
+          flexDirection: "column",
+          rowGap: 5,
+        }}
+      >
+        <Box>
           <Grid marginBottom={2} container spacing={3}>
             <Grid item xs={6}>
               <FormControl fullWidth>
@@ -198,6 +207,7 @@ export default function HomePage() {
           </Button>
         </Box>
         <EndDowHome />
+        <PopularHome />
       </Box>
     </>
   );

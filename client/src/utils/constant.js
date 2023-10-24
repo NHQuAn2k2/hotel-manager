@@ -1,5 +1,8 @@
 export const cities = [
   "TP HCM",
+  "Nha Trang",
+  "Hoi An",
+  "Da Lat",
   "Ha Noi",
   "Hai Phong",
   "Da Nang",
