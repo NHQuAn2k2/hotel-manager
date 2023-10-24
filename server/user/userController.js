@@ -1,8 +1,11 @@
 const express = require("express");
 const userService = require("./userService");
-const user_router = express.Router();
-user_router.get("/", (req, res) => {
-  userService.hello();
-  res.send("hello users");
+const userRouter = express.Router();
+userRouter.post("/register", (req, res) => {
+  userService.register(req.body);
+  return res.json({ token: "this is token for you" });
 });
-module.exports = user_router;
+userRouter.post("/login", (req, res) => {
+  userService.login();
+});
+module.exports = userRouter;
