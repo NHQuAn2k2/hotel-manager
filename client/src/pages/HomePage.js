@@ -21,6 +21,8 @@ import { cities } from "../utils/constant";
 import styled from "styled-components";
 import EndDowHome from "../components/home/EndDowHome";
 import PopularHome from "../components/home/PopularHome";
+import AccommodationTypeHome from "../components/home/AccommodationTypeHome";
+import FavoriteHotelHome from "../components/home/FavoriteHotelHome";
 const CalendarCustom = styled(Calendar)`
   width: 100%;
   border: none;
@@ -120,6 +122,9 @@ export default function HomePage() {
         <Box>
           <Grid marginBottom={2} container spacing={3}>
             <Grid item xs={6}>
+              <Typography fontWeight={"bold"} marginBottom={2} variant="h6">
+                Tìm Khách Sạn
+              </Typography>
               <FormControl fullWidth>
                 <InputLabel>chọn khu vực của bạn</InputLabel>
                 <Select
@@ -208,6 +213,8 @@ export default function HomePage() {
         </Box>
         <EndDowHome />
         <PopularHome />
+        <AccommodationTypeHome />
+        <FavoriteHotelHome />
       </Box>
     </>
   );
