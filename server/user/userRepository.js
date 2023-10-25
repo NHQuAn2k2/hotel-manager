@@ -13,6 +13,14 @@ module.exports = {
       callback(result);
     });
   },
+  findByName: (name, callback) => {
+    const query = "SELECT * FROM user WHERE username = ?";
+    const values = [name];
+    db.query(query, values, (err, result) => {
+      if (err) throw err;
+      callback(result);
+    });
+  },
   remove: () => {},
   save: (user) => {
     const query =

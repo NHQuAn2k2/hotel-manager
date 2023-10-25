@@ -1,6 +1,11 @@
 const express = require("express");
 const cors = require("cors");
-require("./mysqlConfig").connect("localhost", "root", "123456", "employees");
+require("./mysqlConfig").connect(
+  "hotelmanager.cujea9dm1yck.ap-southeast-2.rds.amazonaws.com",
+  "NguyenQuan",
+  "K4HGEeMIFrsl5jQ1aYvv",
+  "hotel_manager"
+);
 const userRouter = require("./user/userController");
 const app = express();
 const port = 8080;
