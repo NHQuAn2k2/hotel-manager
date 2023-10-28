@@ -24,4 +24,10 @@ module.exports = {
       }
     });
   },
+  changePassword: () => {},
+  deleteUser: () => {},
+  editInfor: () => {},
+  currencyChange: () => {},
+  changeLanguage: () => {},
+  saveFavouriteHotel: () => {},
 };
