@@ -36,5 +36,11 @@ module.exports = {
       if (err) throw err;
     });
   },
-  remove: () => {},
+  removeById: (id) => {
+    const query = "DELETE FROM user WHERE id = ?";
+    const values = [id];
+    db.query(query, values, (err) => {
+      if (err) throw err;
+    });
+  },
 };

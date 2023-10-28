@@ -8,10 +8,13 @@ require("./mysqlConfig").connect(
 );
 const userRouter = require("./user/userController");
 const hotelRouter = require("./hotel/hotelController");
+const authRouter = require("./auth/authController");
+const jwtFilter = require("./jwt/jwtFilter");
 const app = express();
 const port = 8080;
 app.use(cors(), express.json());
-app.use("/api/v1/user", userRouter);
+app.use("/api/v1", authRouter);
+app.use("/api/v1/user", jwtFilter, userRouter);
 app.use("/api/v1/hotel", hotelRouter);
 app.listen(port, () => {
   console.log(`server is running on localhost:${port}`);
