@@ -7,10 +7,12 @@ require("./mysqlConfig").connect(
   "hotel_manager"
 );
 const userRouter = require("./user/userController");
+const hotelRouter = require("./hotel/hotelController");
 const app = express();
 const port = 8080;
 app.use(cors(), express.json());
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/hotel", hotelRouter);
 app.listen(port, () => {
   console.log(`server is running on localhost:${port}`);
 });
