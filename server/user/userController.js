@@ -5,26 +5,23 @@ const userRouter = express.Router();
 userRouter.post("/register", (req, res) => {
   // dang ky
   userService.register(req.body, (result, token) => {
-    if (result) {
-      return res.json({ token }).status(200);
-    } else {
-      return res.json({ message: "username available" }).status(400);
-    }
+    if (result) return res.json({ token }).status(200);
+    return res.json({ message: "username available" }).status(400);
   });
 });
 userRouter.post("/login", (req, res) => {
   // dang nhap
   userService.login(req.body, (result, token) => {
-    if (result) {
-      return res.status(200).json({ token });
-    } else {
-      return res.status(400).json({ message: "username does not exist" });
-    }
+    if (result) return res.status(200).json({ token });
+    return res.status(400).json({ message: "username does not exist" });
   });
 });
-userRouter.post("/change-password", jwtFilter, (req, res) => {
+userRouter.post("/change-password/:id", jwtFilter, (req, res) => {
   // doi mat khau
-  res.status(200).json({ message: "change password success" });
+  userService.changePassword(req.params.id, req.body, (result) => {
+    if (result) return res.status(200).json();
+    return res.status(400).json();
+  });
 });
 userRouter.delete("/", jwtFilter, (req, res) => {
   // xoa tai khoan

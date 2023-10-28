@@ -10,7 +10,7 @@ module.exports = {
     const query = "SELECT * FROM user WHERE id = ?";
     db.query(query, [id], (err, result) => {
       if (err) throw err;
-      callback(result);
+      callback(result[0]);
     });
   },
   findByName: (name, callback) => {
@@ -18,10 +18,9 @@ module.exports = {
     const values = [name];
     db.query(query, values, (err, result) => {
       if (err) throw err;
-      callback(result);
+      callback(result[0]);
     });
   },
-  remove: () => {},
   save: (user) => {
     const query =
       "INSERT INTO user (id, username, email, password) VALUES (?, ?, ?, ?)";
@@ -30,4 +29,12 @@ module.exports = {
       if (err) throw err;
     });
   },
+  update: (field, id, data) => {
+    const query = `UPDATE user SET ${field} = ? WHERE id = ?`;
+    const values = [data, id];
+    db.query(query, values, (err) => {
+      if (err) throw err;
+    });
+  },
+  remove: () => {},
 };

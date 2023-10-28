@@ -4,11 +4,11 @@ const { generateToken } = require("../jwt/jwtService");
 module.exports = {
   register: (user, callback) => {
     userRepository.findByName(user.username, (data) => {
-      if (data.length > 0) {
+      if (data) {
         callback(false);
       } else {
         const data = new User(user.username, user.email, user.password);
-        const token = generateToken([data]);
+        const token = generateToken(data);
         userRepository.save(data);
         callback(true, token);
       }
@@ -16,7 +16,7 @@ module.exports = {
   },
   login: (user, callback) => {
     userRepository.findByName(user.username, (data) => {
-      if (data.length <= 0) {
+      if (!data) {
         callback(false);
       } else {
         const token = generateToken(data);
@@ -24,7 +24,20 @@ module.exports = {
       }
     });
   },
-  changePassword: () => {},
+  changePassword: (id, req, callback) => {
+    userRepository.findById(id, (data) => {
+      if (!data) {
+        callback(false);
+      } else {
+        if (req.newPassword === req.confirmPassword) {
+          userRepository.update("password", id, req.newPassword);
+          callback(true);
+        } else {
+          callback(false);
+        }
+      }
+    });
+  },
   deleteUser: () => {},
   editInfor: () => {},
   currencyChange: () => {},
