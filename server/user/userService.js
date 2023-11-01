@@ -26,7 +26,15 @@ module.exports = {
       }
     });
   },
-  editInfor: () => {},
+  editInfor: (user, callback) => {
+    userRepository.findById(user.id, (data) => {
+      if (data) {
+        userRepository.update(data.id, user);
+        callback(true);
+      }
+      callback(false);
+    });
+  },
   currencyChange: () => {},
   changeLanguage: () => {},
   saveFavouriteHotel: () => {},

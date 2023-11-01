@@ -18,6 +18,9 @@ module.exports = {
       if (!data) {
         callback(false);
       } else {
+        if (user.password !== data.password || user.email !== data.email) {
+          callback(false);
+        }
         const token = generateToken(data);
         callback(true, token);
       }

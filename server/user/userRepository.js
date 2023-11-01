@@ -29,9 +29,11 @@ module.exports = {
       if (err) throw err;
     });
   },
-  update: (field, id, data) => {
-    const query = `UPDATE user SET ${field} = ? WHERE id = ?`;
-    const values = [data, id];
+  update: (id, data) => {
+    const query = `UPDATE user SET 
+    username = ?, email = ? 
+    WHERE id = ?`;
+    const values = [data.username, data.email, id];
     db.query(query, values, (err) => {
       if (err) throw err;
     });

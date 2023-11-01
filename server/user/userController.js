@@ -15,9 +15,12 @@ userRouter.delete("/:id", (req, res) => {
     return res.status(400).json();
   });
 });
-userRouter.put("/", (req, res) => {
+userRouter.put("/:id", (req, res) => {
   // chinh sua thong tin ca nhan
-  res.status(200).json({ message: "update infor success" });
+  userService.editInfor({ id: req.params.id, ...req.body }, (result) => {
+    if (result)
+      return res.status(200).json({ message: "update infor success" });
+  });
 });
 userRouter.post("/currency-change", (req, res) => {
   // thay doi tien te
