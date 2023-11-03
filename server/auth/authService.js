@@ -6,8 +6,7 @@ module.exports = {
       if (data) {
         callback(false);
       } else {
-        const data = new User(user.username, user.email, user.password);
-        const token = generateToken(data);
+        const token = generateToken(user);
         userRepository.save(data);
         callback(true, token);
       }

@@ -1,37 +1,36 @@
 const express = require("express");
 const userService = require("./userService");
 const userRouter = express.Router();
-userRouter.post("/change-password/:id", (req, res) => {
-  // doi mat khau
-  userService.changePassword(req.params.id, req.body, (result) => {
-    if (result) return res.status(200).json();
-    return res.status(400).json();
-  });
+userRouter.get("/test", (req, res) => {
+  return res.status(200).json({ message: "router user is active" });
 });
-userRouter.delete("/:id", (req, res) => {
-  // xoa tai khoan
-  userService.deleteUser(req.params.id, (result) => {
-    if (result) return res.status(200).json();
-    return res.status(400).json();
-  });
+userRouter.get("/", (req, res) => {
+  // tim kiem
+});
+userRouter.post("/", (req, res) => {
+  // dat phong
+});
+userRouter.post("/", (req, res) => {
+  // huy phong
+});
+userRouter.post("/", (req, res) => {
+  // dgia va bluan
+});
+userRouter.get("/:id", (req, res) => {
+  // hien thi thong tin cn
 });
 userRouter.put("/:id", (req, res) => {
-  // chinh sua thong tin ca nhan
+  // chinh sua thong tin cn
+  // {username, email, sdt, birthday, nationality, sex, address}
   userService.editInfor({ id: req.params.id, ...req.body }, (result) => {
-    if (result)
-      return res.status(200).json({ message: "update infor success" });
+    if (result) return res.status(200).json();
+    return res.status(400).json();
   });
 });
-userRouter.post("/currency-change", (req, res) => {
-  // thay doi tien te
-  res.status(200).json({ message: "currency change success" });
+userRouter.get("/", (req, res) => {
+  // hien thi thong tin dat phong
 });
-userRouter.post("/change-language", (req, res) => {
-  // thay doi ngon ngu
-  res.status(200).json({ message: "change language success" });
-});
-userRouter.post("/save-hotel", (req, res) => {
-  // luu khach san yeu thich
-  res.status(200).json({ message: "save hotel success" });
+userRouter.put("/", (req, res) => {
+  // chinh sua thong tin dat phong
 });
 module.exports = userRouter;

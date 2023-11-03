@@ -7,15 +7,15 @@ require("./mysqlConfig").connect(
   "hotel_manager"
 );
 const userRouter = require("./user/userController");
-const hotelRouter = require("./hotel/hotelController");
+const managerRouter = require("./manager/managerController");
 const authRouter = require("./auth/authController");
 const jwtFilter = require("./jwt/jwtFilter");
 const app = express();
 const port = 8080;
 app.use(cors(), express.json());
-app.use("/api/v1", authRouter);
+app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", jwtFilter, userRouter);
-app.use("/api/v1/hotel", hotelRouter);
+app.use("/api/v1/manager", jwtFilter, managerRouter);
 app.listen(port, () => {
   console.log(`server is running on localhost:${port}`);
 });
