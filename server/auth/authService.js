@@ -40,16 +40,48 @@ module.exports = {
       });
   },
   login: (user, callback) => {
-    userRepository.findByName(user.username, (data) => {
-      if (!data) {
-        callback(false);
-      } else {
-        if (user.password !== data.password || user.email !== data.email) {
-          callback(false);
-        }
-        const token = generateToken(data);
+    const checkUsername = () => {
+      return new Promise((resolve, reject) => {
+        userRepository.findByName(user.username, (data) => {
+          if (data) {
+            resolve();
+          } else {
+            reject("username does not exist");
+          }
+        });
+      });
+    };
+    const checkEmail = () => {
+      return new Promise((resolve, reject) => {
+        userRepository.findByEmail(user.email, (data) => {
+          if (data) {
+            resolve();
+          } else {
+            reject("email does not exist");
+          }
+        });
+      });
+    };
+    const checkPassword = () => {
+      return new Promise((resolve, reject) => {
+        userRepository.findByName(user.username, (data) => {
+          if (user.password !== data.password) {
+            reject("incorrect password");
+          } else {
+            resolve();
+          }
+        });
+      });
+    };
+    checkUsername()
+      .then(checkEmail)
+      .then(checkPassword)
+      .then(() => {
+        const token = generateToken(user);
         callback(true, token);
-      }
-    });
+      })
+      .catch((error) => {
+        callback(false, error);
+      });
   },
 };

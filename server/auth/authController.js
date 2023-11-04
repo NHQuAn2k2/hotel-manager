@@ -10,9 +10,9 @@ authRouter.post("/register", (req, res) => {
 });
 authRouter.post("/login", (req, res) => {
   // dang nhap
-  authService.login(req.body, (result, token) => {
-    if (result) return res.status(200).json({ token });
-    return res.status(400).json({ message: "username does not exist" });
+  authService.login(req.body, (result, data) => {
+    if (result) return res.status(200).json({ token: data });
+    return res.status(400).json({ message: data });
   });
 });
 module.exports = authRouter;
