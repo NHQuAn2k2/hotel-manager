@@ -4,11 +4,19 @@ module.exports = {
   booking: () => {},
   cancel: () => {},
   evaluate: () => {},
-  infor: () => {},
+  viewInfor: (id, callback) => {
+    userRepository.findById(id, (data) => {
+      if (data) {
+        callback(data);
+      } else {
+        callback(false);
+      }
+    });
+  },
   editInfor: (user, callback) => {
     userRepository.findById(user.id, (data) => {
       if (data) {
-        userRepository.update(data.id, user);
+        userRepository.update(user);
         callback(true);
       }
       callback(false);

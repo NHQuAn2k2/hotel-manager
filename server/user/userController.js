@@ -1,5 +1,6 @@
 const express = require("express");
 const userService = require("./userService");
+const userRepository = require("./userRepository");
 const userRouter = express.Router();
 userRouter.get("/test", (req, res) => {
   return res.status(200).json({ message: "router user is active" });
@@ -18,10 +19,13 @@ userRouter.post("/", (req, res) => {
 });
 userRouter.get("/:id", (req, res) => {
   // hien thi thong tin cn
+  userService.viewInfor(req.params.id, (result) => {
+    if (result) return res.status(200).json(result);
+    return res.status(404).json();
+  });
 });
 userRouter.put("/:id", (req, res) => {
   // chinh sua thong tin cn
-  // {username, email, sdt, birthday, nationality, sex, address}
   userService.editInfor({ id: req.params.id, ...req.body }, (result) => {
     if (result) return res.status(200).json();
     return res.status(400).json();

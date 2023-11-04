@@ -7,7 +7,8 @@ module.exports = {
     });
   },
   findById: (id, callback) => {
-    const query = "SELECT * FROM user WHERE id = ?";
+    const query =
+      "SELECT * FROM user JOIN user_infor ON user.id = user_infor.user_id where user.id = ?";
     db.query(query, [id], (err, result) => {
       if (err) throw err;
       callback(result[0]);
@@ -37,11 +38,19 @@ module.exports = {
       if (err) throw err;
     });
   },
-  update: (id, data) => {
-    const query = `UPDATE user SET 
-    username = ?, email = ? 
-    WHERE id = ?`;
-    const values = [data.username, data.email, id];
+  update: (user) => {
+    const query =
+      "UPDATE user JOIN user_infor ON user.id = user_infor.user_id SET username = ?, email = ?, sdt = ?, birthday = ?, nationality = ?, sex = ?, address = ? WHERE user.id = ?";
+    const values = [
+      user.username,
+      user.email,
+      user.sdt,
+      user.birthday,
+      user.nationality,
+      user.sex,
+      user.address,
+      user.id,
+    ];
     db.query(query, values, (err) => {
       if (err) throw err;
     });
