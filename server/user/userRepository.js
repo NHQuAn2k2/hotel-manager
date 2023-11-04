@@ -21,10 +21,18 @@ module.exports = {
       callback(result[0]);
     });
   },
+  findByEmail: (email, callback) => {
+    const query = "SELECT * FROM user WHERE email = ?";
+    const values = [email];
+    db.query(query, values, (err, result) => {
+      if (err) throw err;
+      callback(result[0]);
+    });
+  },
   save: (user) => {
     const query =
-      "INSERT INTO user (id, username, email, password) VALUES (?, ?, ?, ?)";
-    const values = [user.id, user.username, user.email, user.password];
+      "INSERT INTO user (username, email, password) VALUES (?, ?, ?)";
+    const values = [user.username, user.email, user.password];
     db.query(query, values, (err) => {
       if (err) throw err;
     });

@@ -3,9 +3,9 @@ const authRouter = express.Router();
 const authService = require("./authService");
 authRouter.post("/register", (req, res) => {
   // dang ky
-  authService.register(req.body, (result, token) => {
-    if (result) return res.json({ token }).status(200);
-    return res.json({ message: "username available" }).status(400);
+  authService.register(req.body, (result, data) => {
+    if (result) return res.status(200).json({ token: data });
+    return res.status(400).json({ message: data });
   });
 });
 authRouter.post("/login", (req, res) => {
