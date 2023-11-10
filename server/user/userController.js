@@ -8,14 +8,26 @@ userRouter.get("/test", (req, res) => {
 userRouter.get("/", (req, res) => {
   // tim kiem
 });
-userRouter.post("/", (req, res) => {
+userRouter.post("/rooms/booking", (req, res) => {
   // dat phong
+  userService.booking(req.body, (result) => {
+    if (!result) return res.status(400).json();
+    return res.status(200).json();
+  });
 });
-userRouter.post("/", (req, res) => {
+userRouter.post("/rooms/cancel/:bookingId", (req, res) => {
   // huy phong
+  userService.cancel(req.params.bookingId, (result) => {
+    if (!result) return res.status(400).json();
+    return res.status(200).json();
+  });
 });
-userRouter.post("/", (req, res) => {
+userRouter.post("/comments", (req, res) => {
   // dgia va bluan
+  userService.comments(req.body, (result) => {
+    if (!result) return res.status(400).json();
+    return res.status(200).json();
+  });
 });
 userRouter.get("/:id", (req, res) => {
   // hien thi thong tin cn

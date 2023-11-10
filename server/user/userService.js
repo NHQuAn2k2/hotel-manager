@@ -1,8 +1,18 @@
 const userRepository = require("./userRepository");
 module.exports = {
   search: () => {},
-  booking: () => {},
-  cancel: () => {},
+  comments: (data, callback) => {
+    userRepository.insertComments(data);
+    callback(true);
+  },
+  booking: (data, callback) => {
+    userRepository.insertBooking(data);
+    callback(true);
+  },
+  cancel: (data, callback) => {
+    userRepository.deleteBooking(data);
+    callback(true);
+  },
   evaluate: () => {},
   viewInfor: (id, callback) => {
     userRepository.findById(id, (data) => {

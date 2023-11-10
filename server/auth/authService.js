@@ -55,28 +55,26 @@ module.exports = {
       return new Promise((resolve, reject) => {
         userRepository.findByEmail(user.email, (data) => {
           if (data) {
-            resolve();
+            resolve(data);
           } else {
             reject("email does not exist");
           }
         });
       });
     };
-    const checkPassword = () => {
+    const checkPassword = (data) => {
       return new Promise((resolve, reject) => {
-        userRepository.findByName(user.username, (data) => {
-          if (user.password !== data.password) {
-            reject("incorrect password");
-          } else {
-            resolve();
-          }
-        });
+        if (data.password !== user.password) {
+          reject("incorrect password");
+        } else {
+          resolve(user);
+        }
       });
     };
     checkUsername()
       .then(checkEmail)
       .then(checkPassword)
-      .then(() => {
+      .then((user) => {
         const token = generateToken(user);
         callback(true, token);
       })
