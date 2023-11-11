@@ -102,4 +102,21 @@ module.exports = {
       if (err) throw err;
     });
   },
+  searchHotel: (data, callback) => {
+    const query = `SELECT * FROM hotels WHERE name LIKE '%${data}%'`;
+    db.query(query, (err, result) => {
+      if (err) throw err;
+      callback(result);
+    });
+  },
+  viewRoom: (id, callback) => {
+    const query =
+      "SELECT * FROM booking JOIN rooms ON booking.room_id = rooms.id WHERE booking.user_id = ?";
+    const values = [id];
+    db.query(query, values, (err, result) => {
+      if (err) throw err;
+      callback(result);
+    });
+  },
+  editRoom: () => {},
 };

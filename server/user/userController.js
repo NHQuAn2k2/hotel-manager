@@ -5,8 +5,15 @@ const userRouter = express.Router();
 userRouter.get("/test", (req, res) => {
   return res.status(200).json({ message: "router user is active" });
 });
-userRouter.get("/", (req, res) => {
+userRouter.get("/search", (req, res) => {
   // tim kiem
+  userService.search(req.query.name, (result, data) => {
+    if (result) {
+      return res.status(200).json(data);
+    } else {
+      return res.status(200).json({ message: `${req.query.name} not found` });
+    }
+  });
 });
 userRouter.post("/rooms/booking", (req, res) => {
   // dat phong
@@ -43,10 +50,15 @@ userRouter.put("/:id", (req, res) => {
     return res.status(400).json();
   });
 });
-userRouter.get("/", (req, res) => {
-  // hien thi thong tin dat phong
+userRouter.get("/list/rooms/:id", (req, res) => {
+  // hien thi danh sach dat phong
+  userService.viewInforRoom(req.params.id, (result, data) => {
+    if (result) return res.status(200).json(data);
+    return res.status(400).json();
+  });
 });
-userRouter.put("/", (req, res) => {
-  // chinh sua thong tin dat phong
+userRouter.put("/list/rooms", (req, res) => {
+  // chinh sua danh sach dat phong
+  res.status(200).json({ message: "edit success" });
 });
 module.exports = userRouter;

@@ -1,6 +1,14 @@
 const userRepository = require("./userRepository");
 module.exports = {
-  search: () => {},
+  search: (data, callback) => {
+    userRepository.searchHotel(data, (result) => {
+      if (result.length > 0) {
+        callback(true, result);
+      } else {
+        callback(false);
+      }
+    });
+  },
   comments: (data, callback) => {
     userRepository.insertComments(data);
     callback(true);
@@ -32,6 +40,14 @@ module.exports = {
       callback(false);
     });
   },
-  inforRoom: () => {},
+  viewInforRoom: (id, callback) => {
+    userRepository.viewRoom(id, (data) => {
+      if (data.length > 0) {
+        callback(true, data);
+      } else {
+        callback(false);
+      }
+    });
+  },
   editInforRoom: () => {},
 };
