@@ -12,6 +12,7 @@ hotels
 	address
 	description
 	available_rooms
+	manager_id (foreign key)
 
 rooms
 	id (primary key)
@@ -20,13 +21,13 @@ rooms
 	price
 	hotel_id (foreign key)
 
-users
+customers
 	id (primary key)
 	username
 	email
 	password
 
-users_infor
+customers_infor
 	id (primary key)
 	sdt
 	birthday
@@ -34,6 +35,12 @@ users_infor
 	sex
 	address
 	user_id (foreign key)
+
+managers
+	id (primary key)
+	username
+	email
+	password
 
 comments
 	id (primary key)
