@@ -1,2 +1,4 @@
 const userRepository = require("./userRepository");
-module.exports = {};
+module.exports = {
+  search: (data) => {},
+};
