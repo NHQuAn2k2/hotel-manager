@@ -6,16 +6,12 @@ require("./mysqlConfig").connect(
   "K4HGEeMIFrsl5jQ1aYvv",
   "hotel_manager"
 );
-const customerRouter = require("./user/customerController");
-const managerRouter = require("./manager/managerController");
-const authRouter = require("./auth/authController");
+const apiRoutes = require("./routes/index");
 const jwtFilter = require("./jwt/jwtFilter");
 const app = express();
 const port = 8080;
 app.use(cors(), express.json());
-app.use("/auth", authRouter);
-app.use("/customer", customerRouter);
-app.use("/manager", managerRouter);
+app.use("/", apiRoutes);
 app.listen(port, () => {
   console.log(`server is running on localhost:${port}`);
 });
