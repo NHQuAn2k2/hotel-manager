@@ -18,13 +18,8 @@ import dayjs from "dayjs";
 const borderIconButton = `1px solid ${grey[300]}`;
 export default function Search() {
   return (
-    <m.Box marginTop={10}>
-      <m.Stack
-        alignItems={"center"}
-        marginTop={8}
-        direction={"row"}
-        spacing={12}
-      >
+    <m.Box marginTop={7}>
+      <m.Stack alignItems={"center"} direction={"row"} spacing={12}>
         <m.Box>
           <m.Box sx={{ display: "flex", alignItems: "center" }}>
             <m.TextField
