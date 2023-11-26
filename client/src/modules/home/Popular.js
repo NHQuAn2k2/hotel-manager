@@ -5,9 +5,7 @@ import CardImgHome from "../../components/CardImgHome";
 import TitleHome from "../../components/TitleHome";
 export default function Popular() {
   return (
-    <m.Box
-      sx={{ backgroundColor: grey[100], padding: "30px", borderRadius: 2 }}
-    >
+    <m.Box>
       <TitleHome
         title={"Điểm đến đang thịnh hành"}
         subTitle={"Các lựa chọn phổ biến nhất cho du khách từ Việt Nam"}
