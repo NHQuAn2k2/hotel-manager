@@ -12,14 +12,18 @@ module.exports = {
     const query = "SELECT * FROM khach_san WHERE khach_san.ma_khach_san = ?";
     const query2 =
       "SELECT ma_phong, so_phong, loai_phong, gia_phong, tinh_trang FROM phong JOIN khach_san ON phong.ma_khach_san = khach_san.ma_khach_san WHERE khach_san.ma_khach_san = ?";
+    const query3 =
+      "SELECT diem_danh_gia, noi_dung_danh_gia, ngay_danh_gia, ma_khach_hang FROM danh_gia JOIN khach_san ON danh_gia.ma_khach_san = khach_san.ma_khach_san WHERE khach_san.ma_khach_san = ?";
     const values = [id];
-    const values2 = [id];
     db.query(query, values, (err, result) => {
       if (err) throw err;
-      db.query(query2, values2, (err, result2) => {
+      db.query(query2, values, (err, result2) => {
         if (err) throw err;
-        const newResult = { ...result[0], phong: result2 };
-        callback(newResult);
+        db.query(query3, values, (err, result3) => {
+          if (err) throw err;
+          const newResult = { ...result[0], phong: result2, danh_gia: result3 };
+          callback(newResult);
+        });
       });
     });
   },

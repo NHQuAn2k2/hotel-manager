@@ -2,6 +2,7 @@ const Customer = require("../models/Customer");
 const { generateToken } = require("../jwt/jwtService");
 const Hotel = require("../models/Hotel");
 const Room = require("../models/Room");
+const Review = require("../models/Review");
 module.exports = {
   login: (req, res) => {
     const checkTen = () =>
@@ -110,6 +111,15 @@ module.exports = {
       }
     });
   },
+  reviewHotel: (req, res) => {
+    Review.save(req.body);
+    res.status(200).json({ message: "danh gia thanh cong" });
+  },
+  detailRoom: (req, res) => {
+    Room.findOne(req.params, (data) => {
+      res.status(200).json(data);
+    });
+  },
   addRoom: (req, res) => {
     const data = { ...req.body, ma_khach_san: req.params.id };
     Room.save(data);
@@ -124,5 +134,9 @@ module.exports = {
     const data = { ...req.body, ma_khach_san: req.params.id };
     Room.delete(data);
     res.status(200).json({ message: "xoa thanh cong" });
+  },
+  bookingRoom: (req, res) => {
+    Room.saveBooking(req.body);
+    res.status(200).json();
   },
 };
