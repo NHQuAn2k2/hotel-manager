@@ -1,10 +1,10 @@
 const db = require("../mysqlConfig").getDb();
 module.exports = {
   save: (data) => {
-    const { ten, email, mat_khau } = data;
+    const { ten, email, ngay_sinh, so_dien_thoai, mat_khau } = data;
     const query =
-      "INSERT INTO khach_hang (ten, email, mat_khau) VALUES (?, ?, ?)";
-    const values = [ten, email, mat_khau];
+      "INSERT INTO khach_hang (ten, email, ngay_sinh, so_dien_thoai, mat_khau) VALUES (?, ?, ?, ?, ?)";
+    const values = [ten, email, ngay_sinh, so_dien_thoai, mat_khau];
     db.query(query, values, (err) => {
       if (err) throw err;
     });
