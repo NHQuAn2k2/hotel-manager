@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import * as m from "@mui/material";
 import { grey } from "@mui/material/colors";
 import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
@@ -8,15 +8,34 @@ import FacebookOutlinedIcon from "@mui/icons-material/FacebookOutlined";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import KingBedIcon from "@mui/icons-material/KingBed";
 import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
-const borderIconButton = `1px solid ${grey[300]}`;
+import CountSearchHome from "../../components/CountSearchHome";
+const borderIconButton = `1px solid ${grey[400]}`;
 export default function Search() {
+  const [booking, setBooking] = useState({
+    checkIn: "",
+    checkOut: "",
+    rooms: 1,
+    adults: 1,
+    childs: 0,
+  });
+  const handleChangeDate = (data, field) => {
+    setBooking((pre) => ({ ...pre, [field]: data }));
+  };
+  const handleIncrease = (field) => {
+    setBooking((pre) => ({ ...pre, [field]: booking[field] + 1 }));
+  };
+  const handleDecrease = (field) => {
+    if (field === "rooms" && booking[field] === 1) return;
+    if (field === "adults" && booking[field] === 1) return;
+    if (field === "childs" && booking[field] === 0) return;
+    setBooking((pre) => ({ ...pre, [field]: booking[field] - 1 }));
+  };
+  console.log(booking);
   return (
     <m.Box marginTop={7}>
       <m.Stack alignItems={"center"} direction={"row"} spacing={12}>
@@ -70,6 +89,12 @@ export default function Search() {
                 minDate={dayjs()}
                 label="Ngày nhận phòng"
                 format="DD/MM/YYYY"
+                onChange={(newDate) =>
+                  handleChangeDate(
+                    `${newDate.$y}/${newDate.$M + 1}/${newDate.$D}`,
+                    "checkIn"
+                  )
+                }
               />
             </DemoContainer>
           </LocalizationProvider>
@@ -79,61 +104,37 @@ export default function Search() {
                 minDate={dayjs()}
                 label="Ngày trả phòng"
                 format="DD/MM/YYYY"
+                onChange={(newDate) =>
+                  handleChangeDate(
+                    `${newDate.$y}/${newDate.$M + 1}/${newDate.$D}`,
+                    "checkOut"
+                  )
+                }
               />
             </DemoContainer>
           </LocalizationProvider>
         </m.Stack>
-        <m.Stack
-          direction={"row"}
-          spacing={1}
-          alignItems={"center"}
-          sx={{ border: borderIconButton, padding: 1, borderRadius: "100px" }}
-        >
-          <KingBedIcon color="primary" />
-          <m.Typography>Phòng - 2</m.Typography>
-          <div>
-            <m.IconButton size="small">
-              <KeyboardArrowDownIcon color="error" />
-            </m.IconButton>
-            <m.IconButton size="small">
-              <KeyboardArrowUpIcon color="primary" />
-            </m.IconButton>
-          </div>
-        </m.Stack>
-        <m.Stack
-          direction={"row"}
-          spacing={1}
-          alignItems={"center"}
-          sx={{ border: borderIconButton, padding: 1, borderRadius: "100px" }}
-        >
-          <PermIdentityOutlinedIcon color="primary" />
-          <m.Typography>Người lớn - 2</m.Typography>
-          <div>
-            <m.IconButton size="small">
-              <KeyboardArrowDownIcon color="error" />
-            </m.IconButton>
-            <m.IconButton size="small">
-              <KeyboardArrowUpIcon color="primary" />
-            </m.IconButton>
-          </div>
-        </m.Stack>
-        <m.Stack
-          direction={"row"}
-          spacing={1}
-          alignItems={"center"}
-          sx={{ border: borderIconButton, padding: 1, borderRadius: "100px" }}
-        >
-          <PermIdentityOutlinedIcon color="primary" />
-          <m.Typography>Trẻ em - 2</m.Typography>
-          <div>
-            <m.IconButton size="small">
-              <KeyboardArrowDownIcon color="error" />
-            </m.IconButton>
-            <m.IconButton size="small">
-              <KeyboardArrowUpIcon color="primary" />
-            </m.IconButton>
-          </div>
-        </m.Stack>
+        <CountSearchHome
+          icon={<KingBedIcon color="primary" />}
+          label={"Phòng"}
+          count={booking.rooms}
+          onIncrease={() => handleIncrease("rooms")}
+          onDecrease={() => handleDecrease("rooms")}
+        />
+        <CountSearchHome
+          icon={<PermIdentityOutlinedIcon color="primary" />}
+          label={"Người lớn"}
+          count={booking.adults}
+          onIncrease={() => handleIncrease("adults")}
+          onDecrease={() => handleDecrease("adults")}
+        />
+        <CountSearchHome
+          icon={<PermIdentityOutlinedIcon color="primary" />}
+          label={"Trẻ em"}
+          count={booking.childs}
+          onIncrease={() => handleIncrease("childs")}
+          onDecrease={() => handleDecrease("childs")}
+        />
       </m.Stack>
     </m.Box>
   );

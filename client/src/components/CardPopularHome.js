@@ -1,11 +1,19 @@
 import React from "react";
 import * as m from "@mui/material";
-export default function CardImgHome({ title, img }) {
+import styled from "styled-components";
+const Img = styled.div`
+  height: 270px;
+  transition: transform 0.3s ease-in-out;
+  &:hover {
+    transform: scale(1.1);
+  }
+`;
+export default function CardPopularHome({ title, img }) {
   return (
     <m.Paper
       sx={{ cursor: "pointer", position: "relative", overflow: "hidden" }}
     >
-      <div style={{ height: 270 }}>
+      <Img>
         <img
           style={{
             width: "100%",
@@ -15,7 +23,7 @@ export default function CardImgHome({ title, img }) {
           alt=""
           src={img}
         />
-      </div>
+      </Img>
       <m.Box
         position={"absolute"}
         bottom={0}

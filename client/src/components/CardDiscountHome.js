@@ -8,8 +8,10 @@ export default function CardDiscountHome({
   img,
 }) {
   return (
-    <m.Card sx={{ display: "flex", justifyContent: "space-between" }}>
-      <m.Stack direction={"column"}>
+    <m.Card
+      sx={{ display: "flex", justifyContent: "space-between", height: "100%" }}
+    >
+      <m.Stack justifyContent={"space-between"} direction={"column"}>
         <m.CardContent>
           <m.Typography fontWeight={"bold"} gutterBottom>
             {title}
