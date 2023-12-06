@@ -35,7 +35,9 @@ export default function Search() {
     if (field === "childs" && booking[field] === 0) return;
     setBooking((pre) => ({ ...pre, [field]: booking[field] - 1 }));
   };
-  console.log(booking);
+  const handleSearch = () => {
+    console.log(booking);
+  };
   return (
     <m.Box marginTop={7}>
       <m.Stack alignItems={"center"} direction={"row"} spacing={12}>
@@ -54,7 +56,9 @@ export default function Search() {
               }}
               variant="standard"
             />
-            <m.Button variant="contained">tìm khách sạn</m.Button>
+            <m.Button onClick={() => handleSearch()} variant="contained">
+              tìm khách sạn
+            </m.Button>
           </m.Box>
         </m.Box>
         <m.Stack spacing={2} direction={"row"} alignItems={"center"}>
