@@ -60,11 +60,12 @@ module.exports = {
       callback(result);
     });
   },
-  save: (data) => {
+  save: (data, dataFile) => {
     const { ten, dia_chi, mo_ta } = data;
+    const hinh_anh = dataFile;
     const query =
-      "INSERT INTO khach_san (ten, dia_chi, mo_ta) VALUES (?, ?, ?)";
-    const values = [ten, dia_chi, mo_ta];
+      "INSERT INTO khach_san (ten, hinh_anh, dia_chi, mo_ta) VALUES (?, ?, ?, ?)";
+    const values = [ten, hinh_anh, dia_chi, mo_ta];
     db.query(query, values, (err) => {
       if (err) throw err;
     });

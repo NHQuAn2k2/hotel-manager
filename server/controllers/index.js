@@ -91,7 +91,9 @@ module.exports = {
     });
   },
   addHotel: (req, res) => {
-    Hotel.save(req.body);
+    const data = req.body;
+    const dataFile = req.file.filename;
+    Hotel.save(data, dataFile);
     return res.status(200).json({ message: "them khach san thanh cong" });
   },
   editHotel: (req, res) => {

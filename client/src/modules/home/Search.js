@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import * as m from "@mui/material";
 import { grey } from "@mui/material/colors";
 import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
@@ -14,8 +14,14 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import CountSearchHome from "../../components/CountSearchHome";
+import axios from "axios";
+import { SearchContext } from "../../context/SearchContext";
+import { useNavigate } from "react-router-dom";
 const borderIconButton = `1px solid ${grey[400]}`;
 export default function Search() {
+  const navigate = useNavigate();
+  const { setDataSearch } = useContext(SearchContext);
+  const [locate, setLocate] = useState("");
   const [booking, setBooking] = useState({
     checkIn: "",
     checkOut: "",
@@ -35,27 +41,55 @@ export default function Search() {
     if (field === "childs" && booking[field] === 0) return;
     setBooking((pre) => ({ ...pre, [field]: booking[field] - 1 }));
   };
-  const handleSearch = () => {
-    console.log(booking);
+  const handleSearch = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8080/results?search_query_address=${locate}`,
+        {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW4iOiJOZ3V5ZW4gSG9hbmcgUXVhbiIsImlhdCI6MTcwMjg2NTkzMCwiZXhwIjoxNzAyOTUyMzMwfQ.5Tgx0uJQmUC0VUSKvMwlepHpMcxtAG03HnzOVSr180U",
+          },
+        }
+      );
+      setDataSearch(res.data);
+      navigate(`/search/results/location/${locate}`);
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <m.Box marginTop={7}>
       <m.Stack alignItems={"center"} direction={"row"} spacing={12}>
         <m.Box>
-          <m.Box sx={{ display: "flex", alignItems: "center" }}>
-            <m.TextField
-              sx={{ width: 400, marginRight: 2 }}
-              id="input-with-icon-textfield"
-              label="Địa điểm"
-              InputProps={{
-                startAdornment: (
-                  <m.InputAdornment position="start">
-                    <FmdGoodOutlinedIcon color="primary" />
-                  </m.InputAdornment>
-                ),
-              }}
-              variant="standard"
-            />
+          <m.Box sx={{ display: "flex", alignItems: "end", columnGap: 2 }}>
+            <m.Stack flexDirection={"row"} alignItems={"end"} columnGap={1}>
+              <FmdGoodOutlinedIcon color="primary" />
+              <m.FormControl variant="standard" sx={{ minWidth: 300 }}>
+                <m.InputLabel id="locate-select">Địa điểm</m.InputLabel>
+                <m.Select
+                  labelId="locate-select"
+                  id="locate"
+                  value={locate}
+                  onChange={(e) => setLocate(e.target.value)}
+                  label="Age"
+                >
+                  <m.MenuItem value="">
+                    <em>None</em>
+                  </m.MenuItem>
+                  <m.MenuItem value={"da lat"}>Da Lat</m.MenuItem>
+                  <m.MenuItem value={"TP. Ho Chi Minh"}>TP.HCM</m.MenuItem>
+                  <m.MenuItem value={"vung tau"}>Vung Tau</m.MenuItem>
+                  <m.MenuItem value={"ha noi"}>Ha Noi</m.MenuItem>
+                  <m.MenuItem value={"da nang"}>Da Nang</m.MenuItem>
+                  <m.MenuItem value={"nha trang"}>Nha Trang</m.MenuItem>
+                  <m.MenuItem value={"hoi an"}>Hoi An</m.MenuItem>
+                  <m.MenuItem value={"phu quoc"}>Phu Quoc</m.MenuItem>
+                  <m.MenuItem value={"sa pa"}>Sa Pa</m.MenuItem>
+                  <m.MenuItem value={"hue"}>Hue</m.MenuItem>
+                </m.Select>
+              </m.FormControl>
+            </m.Stack>
             <m.Button onClick={() => handleSearch()} variant="contained">
               tìm khách sạn
             </m.Button>
