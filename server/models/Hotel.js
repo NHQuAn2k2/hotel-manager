@@ -16,7 +16,7 @@ module.exports = {
     JOIN khach_san ON phong.ma_khach_san = khach_san.ma_khach_san 
     WHERE khach_san.ma_khach_san = ?`;
     const query3 = `
-    SELECT diem_danh_gia, noi_dung_danh_gia, ngay_danh_gia, khach_hang.ten 
+    SELECT ma_danh_gia, diem_danh_gia, noi_dung_danh_gia, ngay_danh_gia, khach_hang.ten 
     FROM danh_gia 
     JOIN khach_san ON danh_gia.ma_khach_san = khach_san.ma_khach_san
     JOIN khach_hang ON danh_gia.ma_khach_hang = khach_hang.ma_khach_hang 

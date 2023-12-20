@@ -44,13 +44,7 @@ export default function Search() {
   const handleSearch = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/results?search_query_address=${locate}`,
-        {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW4iOiJOZ3V5ZW4gSG9hbmcgUXVhbiIsImlhdCI6MTcwMjg2NTkzMCwiZXhwIjoxNzAyOTUyMzMwfQ.5Tgx0uJQmUC0VUSKvMwlepHpMcxtAG03HnzOVSr180U",
-          },
-        }
+        `http://localhost:8080/results?search_query_address=${locate}`
       );
       setDataSearch(res.data);
       navigate(`/search/results/location/${locate}`);

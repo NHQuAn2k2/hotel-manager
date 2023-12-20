@@ -3,8 +3,10 @@ import { SearchContext } from "../context/SearchContext";
 import { Box, Button, Grid, Paper, Stack, Typography } from "@mui/material";
 import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
 import { apiImages } from "../utils";
+import { useNavigate } from "react-router-dom";
 
 export default function SearchPage() {
+  const navigate = useNavigate();
   const { dataSearch } = useContext(SearchContext);
   if (dataSearch?.message) {
     return <Typography variant="h5">{dataSearch?.message}.</Typography>;
@@ -48,12 +50,15 @@ export default function SearchPage() {
                     {data.mo_ta}
                   </Typography>
                   <div>
-                    <Typography sx={{ marginBottom: 1 }} variant="h6">
-                      Tuyet voi - 8.8
-                    </Typography>
-                    <Typography variant="body2">1.277 danh gia</Typography>
+                    <Typography variant="body1">1.277 Danh Gia</Typography>
                   </div>
-                  <Button sx={{ width: "200px" }} variant="contained">
+                  <Button
+                    onClick={() =>
+                      navigate(`/detail/hotel/${data.ma_khach_san}`)
+                    }
+                    sx={{ width: "200px" }}
+                    variant="contained"
+                  >
                     xem chi tiet
                   </Button>
                 </Box>

@@ -10,7 +10,7 @@ import axios from "axios";
 import { api } from "../../utils";
 
 export default function DialogLogin({ open, onClose = () => {} }) {
-  const [data, setData] = useState({ ten: "", email: "", mat_khau: "" });
+  const [data, setData] = useState({ email: "", mat_khau: "" });
   const [error, setError] = useState("");
   const handleOnChangeInput = (e) => {
     setData((pre) => ({ ...pre, [e.target.name]: e.target.value }));
@@ -20,6 +20,7 @@ export default function DialogLogin({ open, onClose = () => {} }) {
       const res = await axios.post(`${api}/login`, data);
       const token = res.data.token;
       localStorage.setItem("token", token);
+      window.location.reload();
       onClose();
     } catch (error) {
       setError(error.response.data.message);
@@ -38,13 +39,6 @@ export default function DialogLogin({ open, onClose = () => {} }) {
           </DialogContentText>
         )}
         <Stack flexDirection={"column"} rowGap={3} width={"400px"}>
-          <TextField
-            onChange={handleOnChangeInput}
-            name="ten"
-            fullWidth
-            variant="standard"
-            label="Ten"
-          />
           <TextField
             onChange={handleOnChangeInput}
             name="email"

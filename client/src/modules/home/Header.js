@@ -1,15 +1,23 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import * as m from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import DialogRegister from "./DialogRegister";
 import DialogLogin from "./DialogLogin";
+import { AuthContext } from "../../context/AuthContext";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 export default function Header() {
+  const { user } = useContext(AuthContext);
   const [open, setOpen] = useState({ register: false, login: false });
-  const handleOpenDialogRegister = (field) => {
+  const handleOpenDialog = (field) => {
     setOpen((pre) => ({ ...pre, [field]: true }));
   };
-  const handleCloseDialogRegister = () => {
+  const handleCloseDialog = () => {
     setOpen({ register: false, login: false });
+  };
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.reload();
   };
   return (
     <>
@@ -27,27 +35,39 @@ export default function Header() {
             <HelpOutlineIcon color="primary" />
           </m.IconButton>
           <m.Typography>Đăng chỗ nghỉ của Quý vị</m.Typography>
-          <m.Button
-            onClick={() => handleOpenDialogRegister("register")}
-            size="small"
-            variant="contained"
-          >
-            đăng ký
-          </m.Button>
-          <m.Button
-            onClick={() => handleOpenDialogRegister("login")}
-            size="small"
-            variant="contained"
-          >
-            đăng nhập
-          </m.Button>
+          {user === "" ? (
+            <>
+              <m.Button
+                onClick={() => handleOpenDialog("register")}
+                size="small"
+                variant="contained"
+              >
+                đăng ký
+              </m.Button>
+              <m.Button
+                onClick={() => handleOpenDialog("login")}
+                size="small"
+                variant="contained"
+              >
+                đăng nhập
+              </m.Button>
+            </>
+          ) : (
+            <>
+              <m.Chip
+                size="medium"
+                label={`Xin Chao: ${user}`}
+                variant="outlined"
+              />
+              <Button onClick={handleLogout} size="small" variant="contained">
+                dang xuat
+              </Button>
+            </>
+          )}
         </m.Stack>
       </m.Box>
-      <DialogRegister
-        open={open.register}
-        onClose={handleCloseDialogRegister}
-      />
-      <DialogLogin open={open.login} onClose={handleCloseDialogRegister} />
+      <DialogRegister open={open.register} onClose={handleCloseDialog} />
+      <DialogLogin open={open.login} onClose={handleCloseDialog} />
     </>
   );
 }

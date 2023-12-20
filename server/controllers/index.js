@@ -5,21 +5,11 @@ const Room = require("../models/Room");
 const Review = require("../models/Review");
 module.exports = {
   login: (req, res) => {
-    const checkTen = () =>
+    const checkEmail = () =>
       new Promise((resolve, reject) => {
-        Customer.findByName(req.body, (data) => {
+        Customer.findByEmail(req.body, (data) => {
           if (data.length > 0) {
             resolve(req.body);
-          } else {
-            reject("ten khong ton tai!");
-          }
-        });
-      });
-    const checkEmail = (value) =>
-      new Promise((resolve, reject) => {
-        Customer.findByEmail(value, (data) => {
-          if (data.length > 0) {
-            resolve(value);
           } else {
             reject("email khong ton tai!");
           }
@@ -27,16 +17,15 @@ module.exports = {
       });
     const checkPassword = (value) =>
       new Promise((resolve, reject) => {
-        Customer.findByName(value, (data) => {
+        Customer.findByEmail(value, (data) => {
           if (value.mat_khau !== data[0].mat_khau) {
             reject("mat khau khong dung!");
           } else {
-            resolve(value);
+            resolve(data[0]);
           }
         });
       });
-    checkTen()
-      .then(checkEmail)
+    checkEmail()
       .then(checkPassword)
       .then((value) => {
         const token = generateToken(value);

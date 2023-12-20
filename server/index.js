@@ -9,7 +9,6 @@ require("./mysqlConfig").connect(
 );
 const apiRoutes = require("./routes/index");
 const apiAuth = require("./auth/index");
-const jwtFilter = require("./jwt/jwtFilter");
 const multer = require("multer");
 const app = express();
 const port = 8080;
@@ -41,7 +40,7 @@ app.use(multer({ storage: fileStorage, fileFilter }).single("image"));
 //--------------------------------------------------------------------------
 app.use(cors(), express.json());
 app.use("/", apiAuth);
-app.use("/", jwtFilter, apiRoutes);
+app.use("/", apiRoutes);
 app.listen(port, () => {
   console.log(`server is running on localhost:${port}`);
 });

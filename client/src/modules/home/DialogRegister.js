@@ -19,6 +19,7 @@ export default function DialogRegister({ open, onClose = () => {} }) {
       const res = await axios.post(`${api}/register`, data);
       const token = res.data.token;
       localStorage.setItem("token", token);
+      window.location.reload();
       onClose();
     } catch (error) {
       setError(error.response.data.message);
