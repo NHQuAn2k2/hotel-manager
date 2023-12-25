@@ -59,6 +59,9 @@ export default function Header() {
                 label={`Xin Chao: ${user}`}
                 variant="outlined"
               />
+              <Button size="small" variant="contained">
+                xem don dat
+              </Button>
               <Button onClick={handleLogout} size="small" variant="contained">
                 dang xuat
               </Button>

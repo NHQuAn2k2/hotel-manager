@@ -39,10 +39,37 @@ export default function DetailPage() {
   const handleOpenDialog = (field) => {
     if (token === undefined) {
       alert("Ban chua dang nhap!");
-    } else {
-      setOpen((pre) => ({ ...pre, [field]: true }));
-      console.log(booking);
+      return;
     }
+    if (booking.ngay_nhan === "" || booking.ngay_tra === "") {
+      alert("Ban chua chon ngay nhan hoac ngay tra phong!");
+      return;
+    }
+    if (booking.rooms.length <= 0) {
+      alert("Ban chua chon phong!");
+      return;
+    }
+    setOpen((pre) => ({ ...pre, [field]: true }));
+    setBooking((pre) => ({
+      ...pre,
+      thanh_tien: handleSumRoomAndService(),
+      so_luong_phong: getCountRoom(),
+    }));
+  };
+  const getCountRoom = () => {
+    return booking.rooms.length;
+  };
+  const handleSumRoomAndService = () => {
+    const totalGiaPhong = booking.rooms.reduce(
+      (acc, room) => acc + room.gia_phong,
+      0
+    );
+    const totalGiaDichVu = booking.services.reduce(
+      (acc, service) => acc + service.gia_dich_vu,
+      0
+    );
+    const total = totalGiaPhong + totalGiaDichVu;
+    return total;
   };
   const handleChangeCheckBox = (field, payload, e) => {
     setBooking((pre) => {
@@ -116,9 +143,7 @@ export default function DetailPage() {
             <FormGroup row>
               {hotel?.dich_vu?.map((item) => (
                 <FormControlLabel
-                  onChange={(e) =>
-                    handleChangeCheckBox("service_ids", item.ma_dich_vu, e)
-                  }
+                  onChange={(e) => handleChangeCheckBox("services", item, e)}
                   key={item.ma_dich_vu}
                   control={<Checkbox />}
                   label={`${item.ten_dich_vu} • ${item.gia_dich_vu} VND`}
@@ -146,9 +171,7 @@ export default function DetailPage() {
                   <TableRow key={item.so_phong}>
                     <TableCell>
                       <Checkbox
-                        onChange={(e) =>
-                          handleChangeCheckBox("room_ids", item.so_phong, e)
-                        }
+                        onChange={(e) => handleChangeCheckBox("rooms", item, e)}
                       />
                     </TableCell>
                     <TableCell>
@@ -169,10 +192,10 @@ export default function DetailPage() {
           </TableContainer>
           <Button
             onClick={() => handleOpenDialog("booking")}
-            sx={{ width: "300px" }}
+            sx={{ width: "200px" }}
             variant="contained"
           >
-            xac nhan dat phong
+            dat phong
           </Button>
           <DialogBooking
             open={open.booking}

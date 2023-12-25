@@ -11,8 +11,8 @@ export const BookingProvider = ({ children }) => {
     nguoi_lon: 1,
     tre_em: 0,
     so_luong_phong: 0,
-    room_ids: [],
-    service_ids: [],
+    rooms: [],
+    services: [],
     thanh_tien: "",
     ma_khach_hang: token ? jwtDecode(token).ma : "",
   });
