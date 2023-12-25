@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { api, apiImages } from "../utils";
+import { api, apiImages, token } from "../utils";
 import {
   Box,
   Button,
@@ -30,7 +30,7 @@ import { BookingContext } from "../context/BookingContext";
 import KingBedIcon from "@mui/icons-material/KingBed";
 import DialogBooking from "../modules/detail/DialogBooking";
 export default function DetailPage() {
-  const { booking } = useContext(BookingContext);
+  const { booking, setBooking } = useContext(BookingContext);
   const { id } = useParams();
   const [hotel, setHotel] = useState({});
   const [open, setOpen] = useState({ review: false, booking: false });
@@ -38,7 +38,28 @@ export default function DetailPage() {
     setOpen((pre) => ({ ...pre, [field]: false }));
   };
   const handleOpenDialog = (field) => {
-    setOpen((pre) => ({ ...pre, [field]: true }));
+    if (token === undefined) {
+      alert("Ban chua dang nhap!");
+    } else {
+      setOpen((pre) => ({ ...pre, [field]: true }));
+      console.log(booking);
+    }
+  };
+  const handleChangeCheckBox = (field, payload, e) => {
+    setBooking((pre) => {
+      if (e.target.checked) {
+        return {
+          ...pre,
+          [field]: [...pre[field], payload],
+        };
+      } else {
+        const newIds = pre[field].filter((id) => id !== payload);
+        return {
+          ...pre,
+          [field]: newIds,
+        };
+      }
+    });
   };
   useEffect(() => {
     const handleDetailHotel = async () => {
@@ -94,14 +115,16 @@ export default function DetailPage() {
           <Box>
             <Typography fontWeight={"bold"}>Dich vu cua khach san</Typography>
             <FormGroup row>
-              <FormControlLabel
-                control={<Checkbox />}
-                label="WiFi • 120000 VND"
-              />
-              <FormControlLabel control={<Checkbox />} label="Do xe" />
-              <FormControlLabel control={<Checkbox />} label="Be boi" />
-              <FormControlLabel control={<Checkbox />} label="An uong" />
-              <FormControlLabel control={<Checkbox />} label="The duc & Spa" />
+              {hotel?.dich_vu?.map((item) => (
+                <FormControlLabel
+                  onChange={(e) =>
+                    handleChangeCheckBox("service_ids", item.ma_dich_vu, e)
+                  }
+                  key={item.ma_dich_vu}
+                  control={<Checkbox />}
+                  label={`${item.ten_dich_vu} • ${item.gia_dich_vu} VND`}
+                />
+              ))}
             </FormGroup>
           </Box>
           <TableContainer component={Paper} variant="outlined">
@@ -123,7 +146,11 @@ export default function DetailPage() {
                 {hotel?.phong?.map((item) => (
                   <TableRow key={item.so_phong}>
                     <TableCell>
-                      <Checkbox />
+                      <Checkbox
+                        onChange={(e) =>
+                          handleChangeCheckBox("room_ids", item.so_phong, e)
+                        }
+                      />
                     </TableCell>
                     <TableCell>
                       <Stack

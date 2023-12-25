@@ -3,6 +3,7 @@ const { generateToken } = require("../jwt/jwtService");
 const Hotel = require("../models/Hotel");
 const Room = require("../models/Room");
 const Review = require("../models/Review");
+const Service = require("../models/Service");
 module.exports = {
   login: (req, res) => {
     const checkEmail = () =>
@@ -129,5 +130,25 @@ module.exports = {
   bookingRoom: (req, res) => {
     Room.saveBooking(req.body);
     res.status(200).json();
+  },
+  detailService: (req, res) => {
+    Service.findOne(req.params, (data) => {
+      res.status(200).json(data);
+    });
+  },
+  addService: (req, res) => {
+    const data = { ...req.body, ma_khach_san: req.params.id };
+    Service.save(data);
+    res.status(200).json({ message: "them thanh cong" });
+  },
+  editService: (req, res) => {
+    const data = { ...req.body, ma_khach_san: req.params.id };
+    Service.update(data);
+    res.status(200).json({ message: "sua thanh cong" });
+  },
+  deleteService: (req, res) => {
+    const data = { ...req.body, ma_khach_san: req.params.id };
+    Service.delete(data);
+    res.status(200).json({ message: "xoa thanh cong" });
   },
 };

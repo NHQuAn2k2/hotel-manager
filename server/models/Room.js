@@ -48,6 +48,7 @@ module.exports = {
       thanh_tien,
       ma_khach_hang,
       room_ids = [],
+      service_ids = [],
     } = data;
     const query =
       "INSERT INTO don_dat_phong (ngay_dat, ngay_nhan, ngay_tra, nguoi_lon, tre_em, so_luong_phong, thanh_tien, ma_khach_hang) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -64,6 +65,14 @@ module.exports = {
     db.query(query, values, (err, result) => {
       if (err) throw err;
       const ma_dat_phong = result.insertId;
+      service_ids.forEach((service_id) => {
+        const query =
+          "INSERT INTO dich_vu_don_dat (ma_dat_phong, ma_dich_vu) VALUES (?, ?)";
+        const values = [ma_dat_phong, service_id];
+        db.query(query, values, (err) => {
+          if (err) throw err;
+        });
+      });
       room_ids.forEach((room_id) => {
         const query =
           "INSERT INTO chi_tiet_don_dat (ma_dat_phong, so_phong) VALUES (?, ?)";
