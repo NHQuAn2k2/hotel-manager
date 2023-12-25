@@ -25,13 +25,13 @@ export default function DialogReview({ open, onClose = () => {} }) {
     ma_khach_hang: tokenDecode?.ma,
     ma_khach_san: id,
   });
-  const [error, setError] = useState({ message: "" });
+  const [error, setError] = useState("");
   const handleReview = async () => {
     if (
       token &&
       (review.noi_dung_danh_gia === "" || review.diem_danh_gia === "")
     ) {
-      setError({ message: "Ban chua viet danh gia!" });
+      setError("Ban chua viet danh gia!");
       return;
     }
     try {
@@ -41,7 +41,7 @@ export default function DialogReview({ open, onClose = () => {} }) {
       window.location.reload();
       onClose();
     } catch (error) {
-      setError(error.response.data);
+      setError(error.response.data.message);
       return;
     }
   };
@@ -52,11 +52,11 @@ export default function DialogReview({ open, onClose = () => {} }) {
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Danh Gia</DialogTitle>
       <DialogContent>
-        {error.message === "" ? (
+        {error === "" ? (
           ""
         ) : (
           <DialogContentText color={"red"} marginBottom={1}>
-            {error.message}
+            {error}
           </DialogContentText>
         )}
         <Stack width={"400px"} flexDirection={"column"} rowGap={3}>

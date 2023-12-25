@@ -12,7 +12,7 @@ export default function SearchPage() {
     return <Typography variant="h5">{dataSearch?.message}.</Typography>;
   } else {
     return (
-      <Grid container spacing={3}>
+      <Grid container spacing={4}>
         {dataSearch.length > 0 &&
           dataSearch.map((data) => (
             <Grid key={data.ma_khach_san} item xs={12}>
@@ -45,12 +45,12 @@ export default function SearchPage() {
                         {data.dia_chi}
                       </Typography>
                     </Stack>
-                  </div>
-                  <Typography sx={{ width: "800px" }} variant="body2">
-                    {data.mo_ta}
-                  </Typography>
-                  <div>
-                    <Typography variant="body1">1.277 Danh Gia</Typography>
+                    <Typography
+                      sx={{ width: "800px", marginTop: 2 }}
+                      variant="body2"
+                    >
+                      {data.mo_ta}
+                    </Typography>
                   </div>
                   <Button
                     onClick={() =>

@@ -6,14 +6,6 @@ import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import MessageIcon from "@mui/icons-material/Message";
 import FacebookOutlinedIcon from "@mui/icons-material/FacebookOutlined";
 import TwitterIcon from "@mui/icons-material/Twitter";
-import KingBedIcon from "@mui/icons-material/KingBed";
-import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs from "dayjs";
-import CountSearchHome from "../../components/CountSearchHome";
 import axios from "axios";
 import { SearchContext } from "../../context/SearchContext";
 import { useNavigate } from "react-router-dom";
@@ -22,25 +14,6 @@ export default function Search() {
   const navigate = useNavigate();
   const { setDataSearch } = useContext(SearchContext);
   const [locate, setLocate] = useState("");
-  const [booking, setBooking] = useState({
-    checkIn: "",
-    checkOut: "",
-    rooms: 1,
-    adults: 1,
-    childs: 0,
-  });
-  const handleChangeDate = (data, field) => {
-    setBooking((pre) => ({ ...pre, [field]: data }));
-  };
-  const handleIncrease = (field) => {
-    setBooking((pre) => ({ ...pre, [field]: booking[field] + 1 }));
-  };
-  const handleDecrease = (field) => {
-    if (field === "rooms" && booking[field] === 1) return;
-    if (field === "adults" && booking[field] === 1) return;
-    if (field === "childs" && booking[field] === 0) return;
-    setBooking((pre) => ({ ...pre, [field]: booking[field] - 1 }));
-  };
   const handleSearch = async () => {
     try {
       const res = await axios.get(
@@ -107,66 +80,6 @@ export default function Search() {
             <TwitterIcon color="primary" />
           </m.IconButton>
         </m.Stack>
-      </m.Stack>
-      <m.Stack
-        spacing={4}
-        direction={"row"}
-        alignItems={"flex-end"}
-        marginTop={7}
-      >
-        <m.Stack direction={"row"} spacing={1}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={["DatePicker"]}>
-              <DatePicker
-                minDate={dayjs()}
-                label="Ngày nhận phòng"
-                format="DD/MM/YYYY"
-                onChange={(newDate) =>
-                  handleChangeDate(
-                    `${newDate.$y}/${newDate.$M + 1}/${newDate.$D}`,
-                    "checkIn"
-                  )
-                }
-              />
-            </DemoContainer>
-          </LocalizationProvider>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={["DatePicker"]}>
-              <DatePicker
-                minDate={dayjs()}
-                label="Ngày trả phòng"
-                format="DD/MM/YYYY"
-                onChange={(newDate) =>
-                  handleChangeDate(
-                    `${newDate.$y}/${newDate.$M + 1}/${newDate.$D}`,
-                    "checkOut"
-                  )
-                }
-              />
-            </DemoContainer>
-          </LocalizationProvider>
-        </m.Stack>
-        <CountSearchHome
-          icon={<KingBedIcon color="primary" />}
-          label={"Phòng"}
-          count={booking.rooms}
-          onIncrease={() => handleIncrease("rooms")}
-          onDecrease={() => handleDecrease("rooms")}
-        />
-        <CountSearchHome
-          icon={<PermIdentityOutlinedIcon color="primary" />}
-          label={"Người lớn"}
-          count={booking.adults}
-          onIncrease={() => handleIncrease("adults")}
-          onDecrease={() => handleDecrease("adults")}
-        />
-        <CountSearchHome
-          icon={<PermIdentityOutlinedIcon color="primary" />}
-          label={"Trẻ em"}
-          count={booking.childs}
-          onIncrease={() => handleIncrease("childs")}
-          onDecrease={() => handleDecrease("childs")}
-        />
       </m.Stack>
     </m.Box>
   );

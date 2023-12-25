@@ -15,6 +15,10 @@ export default function DialogRegister({ open, onClose = () => {} }) {
     setData((pre) => ({ ...pre, [e.target.name]: e.target.value }));
   };
   const handleRegister = async () => {
+    if (data.ten === "" || data.email === "" || data.mat_khau === "") {
+      setError("Ban chua nhap thong tin!");
+      return;
+    }
     try {
       const res = await axios.post(`${api}/register`, data);
       const token = res.data.token;

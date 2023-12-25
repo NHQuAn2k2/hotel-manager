@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { api, apiImages } from "../utils";
@@ -17,20 +17,29 @@ import {
   Paper,
   Avatar,
   Chip,
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
+  Divider,
 } from "@mui/material";
 import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
 import dayjs from "dayjs";
 import DialogReview from "../modules/review/DialogReview";
+import Booking from "../components/Booking";
+import { BookingContext } from "../context/BookingContext";
+import KingBedIcon from "@mui/icons-material/KingBed";
+import DialogBooking from "../modules/detail/DialogBooking";
 export default function DetailPage() {
-  const [open, setOpen] = useState(false);
-  const handleCloseDialogReview = () => {
-    setOpen(false);
-  };
-  const handleOpenDialogReview = () => {
-    setOpen(true);
-  };
+  const { booking } = useContext(BookingContext);
   const { id } = useParams();
   const [hotel, setHotel] = useState({});
+  const [open, setOpen] = useState({ review: false, booking: false });
+  const handleCloseDialog = (field) => {
+    setOpen((pre) => ({ ...pre, [field]: false }));
+  };
+  const handleOpenDialog = (field) => {
+    setOpen((pre) => ({ ...pre, [field]: true }));
+  };
   useEffect(() => {
     const handleDetailHotel = async () => {
       try {
@@ -43,9 +52,9 @@ export default function DetailPage() {
     handleDetailHotel();
   }, [id]);
   return (
-    <>
+    <div>
       <Stack>
-        <Typography variant="h5">{hotel.ten}</Typography>
+        <Typography variant="h5">{hotel?.ten}</Typography>
         <Stack
           sx={{ marginTop: 1 }}
           flexDirection={"row"}
@@ -54,61 +63,115 @@ export default function DetailPage() {
         >
           <FmdGoodOutlinedIcon color="primary" />
           <Typography color={"Highlight"} variant="body1">
-            {hotel.dia_chi}
+            {hotel?.dia_chi}
           </Typography>
         </Stack>
         <Box sx={{ marginTop: 2, height: "700px" }}>
-          <img alt="" src={`${apiImages}/${hotel.hinh_anh}`} />
+          <img
+            alt=""
+            src={
+              hotel?.hinh_anh === "" ? "" : `${apiImages}/${hotel?.hinh_anh}`
+            }
+          />
         </Box>
-        <Typography fontWeight={"bold"} sx={{ marginTop: 5 }} variant="h6">
+        <Typography
+          fontWeight={"bold"}
+          sx={{ marginTop: 5, marginBottom: 1 }}
+          variant="h6"
+        >
           Mo Ta
         </Typography>
-        <Typography sx={{ width: "800px" }}>{hotel.mo_ta}</Typography>
-        <Typography fontWeight={"bold"} variant="h6" sx={{ marginTop: 5 }}>
-          Danh Sach Phong
+        <Typography sx={{ width: "800px" }}>{hotel?.mo_ta}</Typography>
+        <Typography
+          fontWeight={"bold"}
+          variant="h6"
+          sx={{ marginTop: 5, marginBottom: 1 }}
+        >
+          Dat Phong
         </Typography>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontWeight: "bold" }}>Loai phong</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Gia phong</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {hotel?.phong?.map((item) => (
-                <TableRow key={item.so_phong}>
-                  <TableCell>{item.loai_phong}</TableCell>
-                  <TableCell>{item.gia_phong}</TableCell>
-                  <TableCell>
-                    <Button variant="contained" size="small">
-                      dat phong
-                    </Button>
+        <Stack flexDirection={"column"} rowGap={2}>
+          <Booking />
+          <Box>
+            <Typography fontWeight={"bold"}>Dich vu cua khach san</Typography>
+            <FormGroup row>
+              <FormControlLabel
+                control={<Checkbox />}
+                label="WiFi • 120000 VND"
+              />
+              <FormControlLabel control={<Checkbox />} label="Do xe" />
+              <FormControlLabel control={<Checkbox />} label="Be boi" />
+              <FormControlLabel control={<Checkbox />} label="An uong" />
+              <FormControlLabel control={<Checkbox />} label="The duc & Spa" />
+            </FormGroup>
+          </Box>
+          <TableContainer component={Paper} variant="outlined">
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: "bold", fontSize: "16px" }}>
+                    Chon Phong
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold", fontSize: "16px" }}>
+                    Loai Phong
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold", fontSize: "16px" }}>
+                    Gia Hom Nay
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {hotel?.phong?.map((item) => (
+                  <TableRow key={item.so_phong}>
+                    <TableCell>
+                      <Checkbox />
+                    </TableCell>
+                    <TableCell>
+                      <Stack
+                        flexDirection={"row"}
+                        alignItems={"center"}
+                        columnGap={1}
+                      >
+                        <KingBedIcon color="primary" />
+                        <Typography>{item.loai_phong}</Typography>
+                      </Stack>
+                    </TableCell>
+                    <TableCell>{item.gia_phong} VND • 1 Dem</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Button
+            onClick={() => handleOpenDialog("booking")}
+            sx={{ width: "300px" }}
+            variant="contained"
+          >
+            xac nhan dat phong
+          </Button>
+          <DialogBooking
+            open={open.booking}
+            onClose={() => handleCloseDialog("booking")}
+          />
+        </Stack>
         <Stack
           marginTop={5}
-          marginBottom={2}
+          marginBottom={1}
           flexDirection={"row"}
           alignItems={"center"}
-          columnGap={3}
+          columnGap={2}
         >
           <Typography variant="h6" fontWeight={"bold"}>
             Danh Gia Cua Khach Hang
           </Typography>
           <Button
-            onClick={handleOpenDialogReview}
+            onClick={() => handleOpenDialog("review")}
             variant="outlined"
             size="small"
           >
             viet danh gia
           </Button>
         </Stack>
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
           {hotel?.danh_gia?.length > 0 ? (
             hotel?.danh_gia?.map((item) => (
               <Grid key={item.ma_danh_gia} item xs={4}>
@@ -125,15 +188,17 @@ export default function DetailPage() {
                     >
                       <Avatar sizes="small" />
                       <div>
-                        <Typography>{item.ten}</Typography>
+                        <Typography fontWeight={"bold"}>{item.ten}</Typography>
                         <Typography variant="caption">
-                          {dayjs(item.ngay_danh_gia).format("YYYY-MM-DD")}
+                          {dayjs(item.ngay_danh_gia).format("DD/MM/YYYY")}
                         </Typography>
                       </div>
                     </Stack>
                     <Chip
+                      color="primary"
                       size="medium"
-                      variant="outlined"
+                      variant="filled"
+                      sx={{ fontWeight: "bold" }}
                       label={`${item.diem_danh_gia}`}
                     />
                   </Stack>
@@ -150,7 +215,10 @@ export default function DetailPage() {
           )}
         </Grid>
       </Stack>
-      <DialogReview open={open} onClose={handleCloseDialogReview} />
-    </>
+      <DialogReview
+        open={open.review}
+        onClose={() => handleCloseDialog("review")}
+      />
+    </div>
   );
 }

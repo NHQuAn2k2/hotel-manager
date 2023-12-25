@@ -4,7 +4,6 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import DialogRegister from "./DialogRegister";
 import DialogLogin from "./DialogLogin";
 import { AuthContext } from "../../context/AuthContext";
-import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 export default function Header() {
   const { user } = useContext(AuthContext);
@@ -55,6 +54,7 @@ export default function Header() {
           ) : (
             <>
               <m.Chip
+                sx={{ fontSize: "14px" }}
                 size="medium"
                 label={`Xin Chao: ${user}`}
                 variant="outlined"

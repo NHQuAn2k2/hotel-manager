@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import { SearchProvider } from "./context/SearchContext";
 import { AuthProvider } from "./context/AuthContext";
+import { BookingProvider } from "./context/BookingContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -12,7 +13,9 @@ root.render(
     <BrowserRouter>
       <SearchProvider>
         <AuthProvider>
-          <App />
+          <BookingProvider>
+            <App />
+          </BookingProvider>
         </AuthProvider>
       </SearchProvider>
     </BrowserRouter>

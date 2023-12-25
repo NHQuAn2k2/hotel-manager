@@ -16,6 +16,10 @@ export default function DialogLogin({ open, onClose = () => {} }) {
     setData((pre) => ({ ...pre, [e.target.name]: e.target.value }));
   };
   const handleLogin = async () => {
+    if (data.email === "" || data.mat_khau === "") {
+      setError("Ban chua nhap thong tin!");
+      return;
+    }
     try {
       const res = await axios.post(`${api}/login`, data);
       const token = res.data.token;
