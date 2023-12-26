@@ -37,24 +37,26 @@ export default function DetailPage() {
     setOpen((pre) => ({ ...pre, [field]: false }));
   };
   const handleOpenDialog = (field) => {
-    if (token === undefined) {
-      alert("Ban chua dang nhap!");
-      return;
-    }
-    if (booking.ngay_nhan === "" || booking.ngay_tra === "") {
-      alert("Ban chua chon ngay nhan hoac ngay tra phong!");
-      return;
-    }
-    if (booking.rooms.length <= 0) {
-      alert("Ban chua chon phong!");
-      return;
+    if (field === "booking") {
+      if (token === undefined) {
+        alert("Ban chua dang nhap!");
+        return;
+      }
+      if (booking.ngay_nhan === "" || booking.ngay_tra === "") {
+        alert("Ban chua chon ngay nhan hoac ngay tra phong!");
+        return;
+      }
+      if (booking.rooms.length <= 0) {
+        alert("Ban chua chon phong!");
+        return;
+      }
+      setBooking((pre) => ({
+        ...pre,
+        thanh_tien: handleSumRoomAndService(),
+        so_luong_phong: getCountRoom(),
+      }));
     }
     setOpen((pre) => ({ ...pre, [field]: true }));
-    setBooking((pre) => ({
-      ...pre,
-      thanh_tien: handleSumRoomAndService(),
-      so_luong_phong: getCountRoom(),
-    }));
   };
   const getCountRoom = () => {
     return booking.rooms.length;
@@ -134,7 +136,7 @@ export default function DetailPage() {
           variant="h6"
           sx={{ marginTop: 5, marginBottom: 1 }}
         >
-          Dat Phong
+          Phong Trong
         </Typography>
         <Stack flexDirection={"column"} rowGap={2}>
           <Booking />
@@ -167,26 +169,33 @@ export default function DetailPage() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {hotel?.phong?.map((item) => (
-                  <TableRow key={item.so_phong}>
-                    <TableCell>
-                      <Checkbox
-                        onChange={(e) => handleChangeCheckBox("rooms", item, e)}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Stack
-                        flexDirection={"row"}
-                        alignItems={"center"}
-                        columnGap={1}
-                      >
-                        <KingBedIcon color="primary" />
-                        <Typography>{item.loai_phong}</Typography>
-                      </Stack>
-                    </TableCell>
-                    <TableCell>{item.gia_phong} VND • 1 Dem</TableCell>
-                  </TableRow>
-                ))}
+                {hotel?.phong?.map((item) => {
+                  if (item.tinh_trang === 1) {
+                    return null;
+                  }
+                  return (
+                    <TableRow key={item.so_phong}>
+                      <TableCell>
+                        <Checkbox
+                          onChange={(e) =>
+                            handleChangeCheckBox("rooms", item, e)
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Stack
+                          flexDirection={"row"}
+                          alignItems={"center"}
+                          columnGap={1}
+                        >
+                          <KingBedIcon color="primary" />
+                          <Typography>{item.loai_phong}</Typography>
+                        </Stack>
+                      </TableCell>
+                      <TableCell>{item.gia_phong} VND • 1 Dem</TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </TableContainer>

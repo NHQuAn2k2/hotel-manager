@@ -11,7 +11,7 @@ module.exports = {
     const { id } = data;
     const query1 = "SELECT * FROM khach_san WHERE khach_san.ma_khach_san = ?";
     const query2 = `
-    SELECT so_phong, loai_phong, gia_phong 
+    SELECT so_phong, loai_phong, gia_phong, tinh_trang 
     FROM phong 
     JOIN khach_san ON phong.ma_khach_san = khach_san.ma_khach_san 
     WHERE khach_san.ma_khach_san = ?`;

@@ -129,7 +129,13 @@ module.exports = {
   },
   bookingRoom: (req, res) => {
     Room.saveBooking(req.body);
-    res.status(200).json();
+    res.status(200).json("dat phong thanh cong!");
+  },
+  getBookingById: (req, res) => {
+    const id = req.params.id;
+    Room.getBooking(id, (data) => {
+      return res.status(200).json(data);
+    });
   },
   detailService: (req, res) => {
     Service.findOne(req.params, (data) => {

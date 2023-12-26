@@ -4,6 +4,7 @@ import SearchPage from "./pages/SearchPage";
 import CommonLayout from "./components/CommonLayout";
 import TestPage from "./pages/TestPage";
 import DetailPage from "./pages/DetailPage";
+import BookingPage from "./pages/BookingPage";
 function App() {
   return (
     <Routes>
@@ -14,6 +15,7 @@ function App() {
           element={<SearchPage />}
         />
         <Route path="/detail/hotel/:id" element={<DetailPage />} />
+        <Route path="/booking/user/:id" element={<BookingPage />} />
       </Route>
       <Route path="/test" element={<TestPage />} />
     </Routes>

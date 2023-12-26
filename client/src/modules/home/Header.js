@@ -5,7 +5,11 @@ import DialogRegister from "./DialogRegister";
 import DialogLogin from "./DialogLogin";
 import { AuthContext } from "../../context/AuthContext";
 import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
+import jwtDecode from "jwt-decode";
+import { token } from "../../utils";
 export default function Header() {
+  const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const [open, setOpen] = useState({ register: false, login: false });
   const handleOpenDialog = (field) => {
@@ -59,7 +63,11 @@ export default function Header() {
                 label={`Xin Chao: ${user}`}
                 variant="outlined"
               />
-              <Button size="small" variant="contained">
+              <Button
+                onClick={() => navigate(`/booking/user/${jwtDecode(token).ma}`)}
+                size="small"
+                variant="contained"
+              >
                 xem don dat
               </Button>
               <Button onClick={handleLogout} size="small" variant="contained">
