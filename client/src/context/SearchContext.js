@@ -2,8 +2,8 @@ import { createContext, useState } from "react";
 
 export const SearchContext = createContext();
 export const SearchProvider = ({ children }) => {
-  const [dataSearch, setDataSearch] = useState([]);
-  const value = { dataSearch, setDataSearch };
+  const [search, setSearch] = useState([]);
+  const value = { search, setSearch };
   return (
     <SearchContext.Provider value={value}>{children}</SearchContext.Provider>
   );

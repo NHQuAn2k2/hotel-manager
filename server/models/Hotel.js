@@ -11,20 +11,15 @@ module.exports = {
     const { id } = data;
     const query1 = "SELECT * FROM khach_san WHERE khach_san.ma_khach_san = ?";
     const query2 = `
-    SELECT so_phong, loai_phong, gia_phong, tinh_trang 
+    SELECT so_phong, loai_phong, gia_phong, phong.mo_ta, so_luong_khach, tinh_trang 
     FROM phong 
     JOIN khach_san ON phong.ma_khach_san = khach_san.ma_khach_san 
     WHERE khach_san.ma_khach_san = ?`;
     const query3 = `
-    SELECT ma_danh_gia, diem_danh_gia, noi_dung_danh_gia, ngay_danh_gia, khach_hang.ten 
+    SELECT ma_danh_gia, diem_danh_gia, noi_dung_danh_gia, ngay_danh_gia, nguoi_dung.ten 
     FROM danh_gia 
     JOIN khach_san ON danh_gia.ma_khach_san = khach_san.ma_khach_san
-    JOIN khach_hang ON danh_gia.ma_khach_hang = khach_hang.ma_khach_hang 
-    WHERE khach_san.ma_khach_san = ?`;
-    const query4 = `
-    SELECT ma_dich_vu, ten_dich_vu, gia_dich_vu 
-    FROM dich_vu 
-    JOIN khach_san ON dich_vu.ma_khach_san = khach_san.ma_khach_san 
+    JOIN nguoi_dung ON danh_gia.ma_nguoi_dung = nguoi_dung.ma_nguoi_dung 
     WHERE khach_san.ma_khach_san = ?`;
     const executeQuery = (query, values) => {
       return new Promise((resolve, reject) => {
@@ -41,14 +36,12 @@ module.exports = {
       executeQuery(query1, [id]),
       executeQuery(query2, [id]),
       executeQuery(query3, [id]),
-      executeQuery(query4, [id]),
     ])
-      .then(([result1, result2, result3, result4]) => {
+      .then(([result1, result2, result3]) => {
         const newData = {
           ...result1[0],
           phong: result2,
           danh_gia: result3,
-          dich_vu: result4,
         };
         callback(newData);
       })

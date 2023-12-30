@@ -12,10 +12,7 @@ router.post("/room/hotel/:id", jwtFilter, controllers.addRoom); //
 router.put("/room/hotel/:id", jwtFilter, controllers.editRoom); //
 router.delete("/room/hotel/:id", jwtFilter, controllers.deleteRoom); //
 router.post("/booking", jwtFilter, controllers.bookingRoom); //
+router.delete("/booking/:id", jwtFilter, controllers.cancelBooking);
 router.get("/booking/:id", jwtFilter, controllers.getBookingById); //
 router.post("/review/hotel/", jwtFilter, controllers.reviewHotel); //
-router.get("/service/:idService/hotel/:idHotel", controllers.detailService); //
-router.post("/service/hotel/:id", jwtFilter, controllers.addService); //
-router.put("/service/hotel/:id", jwtFilter, controllers.editService); //
-router.delete("/service/hotel/:id", jwtFilter, controllers.deleteService); //
 module.exports = router;

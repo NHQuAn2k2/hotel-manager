@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import axios from "axios";
-import { api, apiImages, token } from "../utils";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { api, apiImages, displayPerson, formatNumber } from "../utils";
 import {
   Box,
-  Button,
+  Checkbox,
+  Paper,
   Stack,
   Table,
   TableBody,
@@ -13,84 +14,27 @@ import {
   TableHead,
   TableRow,
   Typography,
-  Grid,
-  Paper,
-  Avatar,
-  Chip,
-  Checkbox,
-  FormGroup,
-  FormControlLabel,
+  IconButton,
+  Button,
 } from "@mui/material";
-import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
+import {
+  AddCircleIcon,
+  BedIcon,
+  FmdGoodOutlinedIcon,
+  RemoveCircleIcon,
+} from "../icon";
+import { DateRangePicker } from "rsuite";
+import "rsuite/dist/rsuite.min.css";
 import dayjs from "dayjs";
-import DialogReview from "../modules/review/DialogReview";
-import Booking from "../components/Booking";
-import { BookingContext } from "../context/BookingContext";
-import KingBedIcon from "@mui/icons-material/KingBed";
-import DialogBooking from "../modules/detail/DialogBooking";
+const { beforeToday } = DateRangePicker;
 export default function DetailPage() {
-  const { booking, setBooking } = useContext(BookingContext);
+  const navigate = useNavigate();
+  const [night, setNight] = useState(1);
+  const [countPerson, setCountPerson] = useState({ nguoi_lon: 1, tre_em: 0 });
   const { id } = useParams();
   const [hotel, setHotel] = useState({});
-  const [open, setOpen] = useState({ review: false, booking: false });
-  const handleCloseDialog = (field) => {
-    setOpen((pre) => ({ ...pre, [field]: false }));
-  };
-  const handleOpenDialog = (field) => {
-    if (field === "booking") {
-      if (token === undefined) {
-        alert("Ban chua dang nhap!");
-        return;
-      }
-      if (booking.ngay_nhan === "" || booking.ngay_tra === "") {
-        alert("Ban chua chon ngay nhan hoac ngay tra phong!");
-        return;
-      }
-      if (booking.rooms.length <= 0) {
-        alert("Ban chua chon phong!");
-        return;
-      }
-      setBooking((pre) => ({
-        ...pre,
-        thanh_tien: handleSumRoomAndService(),
-        so_luong_phong: getCountRoom(),
-      }));
-    }
-    setOpen((pre) => ({ ...pre, [field]: true }));
-  };
-  const getCountRoom = () => {
-    return booking.rooms.length;
-  };
-  const handleSumRoomAndService = () => {
-    const totalGiaPhong = booking.rooms.reduce(
-      (acc, room) => acc + room.gia_phong,
-      0
-    );
-    const totalGiaDichVu = booking.services.reduce(
-      (acc, service) => acc + service.gia_dich_vu,
-      0
-    );
-    const total = totalGiaPhong + totalGiaDichVu;
-    return total;
-  };
-  const handleChangeCheckBox = (field, payload, e) => {
-    setBooking((pre) => {
-      if (e.target.checked) {
-        return {
-          ...pre,
-          [field]: [...pre[field], payload],
-        };
-      } else {
-        const newIds = pre[field].filter((id) => id !== payload);
-        return {
-          ...pre,
-          [field]: newIds,
-        };
-      }
-    });
-  };
   useEffect(() => {
-    const handleDetailHotel = async () => {
+    const getDetail = async () => {
       try {
         const res = await axios.get(`${api}/hotel/${id}`);
         setHotel(res.data);
@@ -98,185 +42,182 @@ export default function DetailPage() {
         console.log(error);
       }
     };
-    handleDetailHotel();
+    getDetail();
   }, [id]);
+  const handleCountPerson = (field, actions) => {
+    switch (actions) {
+      case "increase":
+        setCountPerson((pre) => ({ ...pre, [field]: countPerson[field] + 1 }));
+        return;
+      case "decrease":
+        if (field === "nguoi_lon" && countPerson[field] === 1) return;
+        if (field === "tre_em" && countPerson[field] === 0) return;
+        setCountPerson((pre) => ({ ...pre, [field]: countPerson[field] - 1 }));
+        return;
+      default:
+        return;
+    }
+  };
+  const handleChangeDate = (date) => {
+    if (!date) return;
+    const ngay_nhan = dayjs(date[0]).format("YYYY/MM/DD");
+    const ngay_tra = dayjs(date[1]).format("YYYY/MM/DD");
+    if (ngay_nhan && ngay_tra) {
+      const so_dem = dayjs(ngay_tra).diff(dayjs(ngay_nhan), "day");
+      so_dem === 0 ? setNight(1) : setNight(so_dem);
+    }
+  };
+  const handleBooking = () => {
+    navigate("/booking/hotel/" + id);
+  };
   return (
-    <div>
-      <Stack>
-        <Typography variant="h5">{hotel?.ten}</Typography>
-        <Stack
-          sx={{ marginTop: 1 }}
-          flexDirection={"row"}
-          alignItems={"center"}
-          columnGap={1}
-        >
-          <FmdGoodOutlinedIcon color="primary" />
-          <Typography color={"Highlight"} variant="body1">
-            {hotel?.dia_chi}
-          </Typography>
-        </Stack>
-        <Box sx={{ marginTop: 2, height: "700px" }}>
-          <img
-            alt=""
-            src={
-              hotel?.hinh_anh === "" ? "" : `${apiImages}/${hotel?.hinh_anh}`
-            }
-          />
-        </Box>
-        <Typography
-          fontWeight={"bold"}
-          sx={{ marginTop: 5, marginBottom: 1 }}
-          variant="h6"
-        >
-          Mo Ta
-        </Typography>
-        <Typography sx={{ width: "800px" }}>{hotel?.mo_ta}</Typography>
-        <Typography
-          fontWeight={"bold"}
-          variant="h6"
-          sx={{ marginTop: 5, marginBottom: 1 }}
-        >
-          Phong Trong
-        </Typography>
-        <Stack flexDirection={"column"} rowGap={2}>
-          <Booking />
-          <Box>
-            <Typography fontWeight={"bold"}>Dich vu cua khach san</Typography>
-            <FormGroup row>
-              {hotel?.dich_vu?.map((item) => (
-                <FormControlLabel
-                  onChange={(e) => handleChangeCheckBox("services", item, e)}
-                  key={item.ma_dich_vu}
-                  control={<Checkbox />}
-                  label={`${item.ten_dich_vu} • ${item.gia_dich_vu} VND`}
-                />
-              ))}
-            </FormGroup>
-          </Box>
-          <TableContainer component={Paper} variant="outlined">
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "16px" }}>
-                    Chon Phong
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "16px" }}>
-                    Loai Phong
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "16px" }}>
-                    Gia Hom Nay
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {hotel?.phong?.map((item) => {
-                  if (item.tinh_trang === 1) {
-                    return null;
-                  }
-                  return (
-                    <TableRow key={item.so_phong}>
-                      <TableCell>
-                        <Checkbox
-                          onChange={(e) =>
-                            handleChangeCheckBox("rooms", item, e)
-                          }
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Stack
-                          flexDirection={"row"}
-                          alignItems={"center"}
-                          columnGap={1}
-                        >
-                          <KingBedIcon color="primary" />
-                          <Typography>{item.loai_phong}</Typography>
-                        </Stack>
-                      </TableCell>
-                      <TableCell>{item.gia_phong} VND • 1 Dem</TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <Button
-            onClick={() => handleOpenDialog("booking")}
-            sx={{ width: "200px" }}
-            variant="contained"
-          >
-            dat phong
-          </Button>
-          <DialogBooking
-            open={open.booking}
-            onClose={() => handleCloseDialog("booking")}
-          />
-        </Stack>
-        <Stack
-          marginTop={5}
-          marginBottom={1}
-          flexDirection={"row"}
-          alignItems={"center"}
-          columnGap={2}
-        >
-          <Typography variant="h6" fontWeight={"bold"}>
-            Danh Gia Cua Khach Hang
-          </Typography>
-          <Button
-            onClick={() => handleOpenDialog("review")}
-            variant="outlined"
-            size="small"
-          >
-            viet danh gia
-          </Button>
-        </Stack>
-        <Grid container spacing={2}>
-          {hotel?.danh_gia?.length > 0 ? (
-            hotel?.danh_gia?.map((item) => (
-              <Grid key={item.ma_danh_gia} item xs={4}>
-                <Paper sx={{ padding: 2 }}>
-                  <Stack
-                    flexDirection={"row"}
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
-                  >
-                    <Stack
-                      flexDirection={"row"}
-                      alignItems={"center"}
-                      columnGap={1}
-                    >
-                      <Avatar sizes="small" />
-                      <div>
-                        <Typography fontWeight={"bold"}>{item.ten}</Typography>
-                        <Typography variant="caption">
-                          {dayjs(item.ngay_danh_gia).format("DD/MM/YYYY")}
-                        </Typography>
-                      </div>
-                    </Stack>
-                    <Chip
-                      color="primary"
-                      size="medium"
-                      variant="filled"
-                      sx={{ fontWeight: "bold" }}
-                      label={`${item.diem_danh_gia}`}
-                    />
-                  </Stack>
-                  <Typography marginTop={2}>
-                    {item.noi_dung_danh_gia}
-                  </Typography>
-                </Paper>
-              </Grid>
-            ))
-          ) : (
-            <Grid item xs={4}>
-              <Typography>Khong co danh gia nao.</Typography>
-            </Grid>
-          )}
-        </Grid>
+    <Box>
+      <Typography marginBottom={1} variant="h5">
+        {hotel.ten}
+      </Typography>
+      <Stack
+        marginBottom={2}
+        flexDirection={"row"}
+        alignItems={"center"}
+        columnGap={1}
+      >
+        <FmdGoodOutlinedIcon color="primary" />
+        <Typography color={"Highlight"}>{hotel.dia_chi}</Typography>
       </Stack>
-      <DialogReview
-        open={open.review}
-        onClose={() => handleCloseDialog("review")}
-      />
-    </div>
+      <Stack flexDirection={"row"} columnGap={2} height={"562px"}>
+        <Box width={"500px"} height={"100%"} flexShrink={0}>
+          <img alt="" src={`${apiImages}/${hotel.hinh_anh}`} />
+        </Box>
+        <Stack flexDirection={"column"} justifyContent={"space-between"}>
+          <Box>
+            <Typography variant="h6" fontWeight={"bold"}>
+              Mo Ta
+            </Typography>
+            <Typography>{hotel.mo_ta}</Typography>
+          </Box>
+          <Box>
+            <Stack
+              flexDirection={"row"}
+              marginBottom={2}
+              columnGap={5}
+              alignItems={"end"}
+            >
+              <Stack flexDirection={"column"} rowGap={1}>
+                <Typography variant="h6" fontWeight={"bold"}>
+                  Phong trong
+                </Typography>
+                <DateRangePicker
+                  format="dd/MM/yyyy"
+                  placeholder="Ngay Nhan Phong - Ngay Tra Phong"
+                  shouldDisableDate={beforeToday()}
+                  style={{ width: "400px" }}
+                  size="lg"
+                  onChange={handleChangeDate}
+                />
+              </Stack>
+              <Stack flexDirection={"column"} alignItems={"center"}>
+                <Typography>Nguoi Lon</Typography>
+                <Stack
+                  flexDirection={"row"}
+                  alignItems={"center"}
+                  columnGap={1}
+                >
+                  <IconButton
+                    onClick={() => handleCountPerson("nguoi_lon", "decrease")}
+                  >
+                    <RemoveCircleIcon color="primary" />
+                  </IconButton>
+                  <Typography>{countPerson.nguoi_lon}</Typography>
+                  <IconButton
+                    onClick={() => handleCountPerson("nguoi_lon", "increase")}
+                  >
+                    <AddCircleIcon color="primary" />
+                  </IconButton>
+                </Stack>
+              </Stack>
+              <Stack flexDirection={"column"} alignItems={"center"}>
+                <Typography>Tre Em</Typography>
+                <Stack
+                  flexDirection={"row"}
+                  alignItems={"center"}
+                  columnGap={1}
+                >
+                  <IconButton
+                    onClick={() => handleCountPerson("tre_em", "decrease")}
+                  >
+                    <RemoveCircleIcon color="primary" />
+                  </IconButton>
+                  <Typography>{countPerson.tre_em}</Typography>
+                  <IconButton
+                    onClick={() => handleCountPerson("tre_em", "increase")}
+                  >
+                    <AddCircleIcon color="primary" />
+                  </IconButton>
+                </Stack>
+              </Stack>
+            </Stack>
+            <TableContainer
+              variant="outlined"
+              component={Paper}
+              sx={{ height: "300px" }}
+            >
+              <Table stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: "bold" }}>
+                      Loai phong
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }}>
+                      So luong khach
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }}>Gia</TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }}>
+                      Chon phong
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {hotel?.phong?.length > 0 &&
+                    hotel?.phong?.map((item) => (
+                      <TableRow key={item.so_phong}>
+                        <TableCell>
+                          <Stack
+                            flexDirection={"row"}
+                            alignItems={"center"}
+                            columnGap={1}
+                            marginBottom={1}
+                          >
+                            <BedIcon />
+                            <Typography>{item.loai_phong}</Typography>
+                          </Stack>
+                          <Typography variant="body2">{item.mo_ta}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          {displayPerson(item.so_luong_khach)}
+                        </TableCell>
+                        <TableCell>
+                          <Typography>
+                            {formatNumber(item.gia_phong * night)} VND
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Checkbox />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <Button
+              onClick={handleBooking}
+              sx={{ width: "300px", marginTop: 2 }}
+              variant="contained"
+            >
+              xac nhan dat
+            </Button>
+          </Box>
+        </Stack>
+      </Stack>
+    </Box>
   );
 }

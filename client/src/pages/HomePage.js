@@ -1,18 +1,11 @@
 import React from "react";
-import * as m from "@mui/material";
-import Popular from "../modules/home/Popular";
-import Favorite from "../modules/home/Favorite";
+import { ContentFavourite, ContentPopular } from "../components/home";
+
 export default function HomePage() {
   return (
-    <div>
-      <m.Grid container spacing={4}>
-        <m.Grid item xs={12}>
-          <Popular />
-        </m.Grid>
-        <m.Grid item xs={12}>
-          <Favorite />
-        </m.Grid>
-      </m.Grid>
-    </div>
+    <>
+      <ContentPopular />
+      <ContentFavourite />
+    </>
   );
 }

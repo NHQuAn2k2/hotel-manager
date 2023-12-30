@@ -1,123 +1,83 @@
-import {
-  Box,
-  Button,
-  Chip,
-  Grid,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Paper,
-  Stack,
-  Typography,
-} from "@mui/material";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { api, token } from "../utils";
-import dayjs from "dayjs";
-import KingBedIcon from "@mui/icons-material/KingBed";
-
+import { Footer, Header } from "../components/home";
+import { Box, Button, Stack, Step, StepLabel, Stepper } from "@mui/material";
+import { LockIcon, NavigateNextIcon } from "../icon";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import { api } from "../utils";
+import { InforCustomer, LayoutBooking, Payment } from "../components/booking";
+const steps = ["Ban chon", "Chi tiet ve ban", "Buoc cuoi cung"];
 export default function BookingPage() {
+  const navigate = useNavigate();
   const { id } = useParams();
-  const [data, setData] = useState([]);
+  const [hotel, setHotel] = useState({});
+  const [activeStep, setActiveStep] = React.useState(1);
+  const handleNext = () => {
+    if (activeStep === steps.length - 1) {
+      navigate("/booking");
+      return;
+    }
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
   useEffect(() => {
-    const getBooking = async () => {
+    const getDetail = async () => {
       try {
-        const res = await axios.get(`${api}/booking/${id}`, {
-          headers: { Authorization: `Bearer ${token ? token : ""}` },
-        });
-        console.log(res.data);
-        setData(res.data);
+        const res = await axios.get(`${api}/hotel/${id}`);
+        setHotel(res.data);
       } catch (error) {
-        alert(error);
+        console.log(error);
       }
     };
-    getBooking();
+    getDetail();
   }, [id]);
   return (
-    <Stack>
-      <Typography marginBottom={1} variant="h5">
-        Don Dat Phong Cua Ban
-      </Typography>
-      <Grid container spacing={2}>
-        {data.length > 0 ? (
-          data.map((item) => (
-            <Grid item xs={6}>
-              <Paper sx={{ padding: 2, height: "100%" }}>
-                <Stack justifyContent={"space-between"} flexDirection={"row"}>
-                  <div>
-                    <Typography gutterBottom>Ten Khach San</Typography>
-                    <Typography gutterBottom>
-                      Ngay Dat: {dayjs(item.ngay_dat).format("DD/MM/YYYY")}
-                    </Typography>
-                    <Typography gutterBottom>
-                      Ngay Nhan: {dayjs(item.ngay_nhan).format("DD/MM/YYYY")}
-                    </Typography>
-                    <Typography gutterBottom>
-                      Ngay Tra: {dayjs(item.ngay_tra).format("DD/MM/YYYY")}
-                    </Typography>
-                    <Typography gutterBottom>
-                      Nguoi Lon: {item.nguoi_lon}
-                    </Typography>
-                    <Typography gutterBottom>Tre Em: {item.tre_em}</Typography>
-                    <Typography gutterBottom fontWeight={"bold"}>
-                      Thanh Tien: {item.thanh_tien} VND
-                    </Typography>
-                    <Button variant="contained" size="small">
-                      huy don
-                    </Button>
-                  </div>
-                  <Box width={"350px"}>
-                    <Box>
-                      <Typography>
-                        So Luong Phong: {item.so_luong_phong}
-                      </Typography>
-                      <List disablePadding>
-                        {item.phong.map((item) => (
-                          <ListItem key={item.ma_phong}>
-                            <ListItemIcon>
-                              <KingBedIcon color="primary" />
-                            </ListItemIcon>
-                            <ListItemText>
-                              {item.loai_phong} • {item.gia_phong} VND
-                            </ListItemText>
-                          </ListItem>
-                        ))}
-                      </List>
-                    </Box>
-                    <Box marginTop={2}>
-                      <Typography marginBottom={1}>Dich Vu</Typography>
-                      <Grid container spacing={1}>
-                        {item.dich_vu.length > 0 ? (
-                          item.dich_vu.map((item) => (
-                            <Grid key={item.ma_dich_vu} item xs={6}>
-                              <Chip
-                                variant="outlined"
-                                label={`${item.ten_dich_vu} • ${item.gia_dich_vu} VND`}
-                              />
-                            </Grid>
-                          ))
-                        ) : (
-                          <Grid item xs={12}>
-                            <Typography variant="body2" color={"GrayText"}>
-                              khong co dich vu
-                            </Typography>
-                          </Grid>
-                        )}
-                      </Grid>
-                    </Box>
-                  </Box>
-                </Stack>
-              </Paper>
-            </Grid>
-          ))
-        ) : (
-          <Grid item xs={12}>
-            <Typography>Khong co don dat phong</Typography>
-          </Grid>
-        )}
-      </Grid>
-    </Stack>
+    <div>
+      <Header />
+      <Stack
+        flexDirection={"column"}
+        rowGap={5}
+        marginTop={3}
+        paddingX={5}
+        paddingBottom={5}
+      >
+        <Box sx={{ width: "100%" }}>
+          <Stepper activeStep={activeStep}>
+            {steps.map((label, index) => {
+              const stepProps = {};
+              const labelProps = {};
+              return (
+                <Step key={label} {...stepProps}>
+                  <StepLabel {...labelProps}>{label}</StepLabel>
+                </Step>
+              );
+            })}
+          </Stepper>
+          <React.Fragment>
+            {activeStep === 1 && (
+              <LayoutBooking hotel={hotel} component={<InforCustomer />} />
+            )}
+            {activeStep === 2 && (
+              <LayoutBooking hotel={hotel} component={<Payment />} />
+            )}
+            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+              <Box sx={{ flex: "1 1 auto" }} />
+              <Button
+                startIcon={
+                  activeStep === steps.length - 1 ? <LockIcon /> : null
+                }
+                endIcon={activeStep === 1 ? <NavigateNextIcon /> : null}
+                variant="contained"
+                onClick={handleNext}
+              >
+                {activeStep === steps.length - 1
+                  ? "dat phong"
+                  : "tiep theo: chi tiet cuoi cung"}
+              </Button>
+            </Box>
+          </React.Fragment>
+        </Box>
+      </Stack>
+      <Footer />
+    </div>
   );
 }

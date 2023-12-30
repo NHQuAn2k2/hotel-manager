@@ -1,23 +1,24 @@
-import HomePage from "./pages/HomePage";
 import { Route, Routes } from "react-router-dom";
-import SearchPage from "./pages/SearchPage";
-import CommonLayout from "./components/CommonLayout";
-import TestPage from "./pages/TestPage";
-import DetailPage from "./pages/DetailPage";
-import BookingPage from "./pages/BookingPage";
+import {
+  BookingPage,
+  DetailPage,
+  ErrorPage,
+  HomePage,
+  SearchPage,
+} from "./pages";
+import { Layout } from "./components";
+import BookingStatusPage from "./pages/BookingStatusPage";
 function App() {
   return (
     <Routes>
-      <Route element={<CommonLayout />}>
+      <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
-        <Route
-          path="/search/results/location/:locate"
-          element={<SearchPage />}
-        />
+        <Route path="/search/location/:value" element={<SearchPage />} />
         <Route path="/detail/hotel/:id" element={<DetailPage />} />
-        <Route path="/booking/user/:id" element={<BookingPage />} />
       </Route>
-      <Route path="/test" element={<TestPage />} />
+      <Route path="/booking/hotel/:id" element={<BookingPage />} />
+      <Route path="/booking" element={<BookingStatusPage />} />
+      <Route path="*" element={<ErrorPage />} />
     </Routes>
   );
 }

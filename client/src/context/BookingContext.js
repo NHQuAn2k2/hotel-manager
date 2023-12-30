@@ -14,7 +14,7 @@ export const BookingProvider = ({ children }) => {
     rooms: [],
     services: [],
     thanh_tien: "",
-    ma_khach_hang: token ? jwtDecode(token).ma : "",
+    ma_nguoi_dung: token ? jwtDecode(token).ma : "",
   });
   const value = { booking, setBooking };
   return (

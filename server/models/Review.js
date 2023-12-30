@@ -5,16 +5,16 @@ module.exports = {
       diem_danh_gia,
       noi_dung_danh_gia,
       ngay_danh_gia,
-      ma_khach_hang,
+      ma_nguoi_dung,
       ma_khach_san,
     } = data;
     const query =
-      "INSERT INTO danh_gia (diem_danh_gia, noi_dung_danh_gia, ngay_danh_gia, ma_khach_hang, ma_khach_san) VALUES (?, ?, ?, ?, ?)";
+      "INSERT INTO danh_gia (diem_danh_gia, noi_dung_danh_gia, ngay_danh_gia, ma_nguoi_dung, ma_khach_san) VALUES (?, ?, ?, ?, ?)";
     const values = [
       diem_danh_gia,
       noi_dung_danh_gia,
       ngay_danh_gia,
-      ma_khach_hang,
+      ma_nguoi_dung,
       ma_khach_san,
     ];
     db.query(query, values, (err) => {

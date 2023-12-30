@@ -3,7 +3,6 @@ const { generateToken } = require("../jwt/jwtService");
 const Hotel = require("../models/Hotel");
 const Room = require("../models/Room");
 const Review = require("../models/Review");
-const Service = require("../models/Service");
 module.exports = {
   login: (req, res) => {
     const checkEmail = () =>
@@ -61,8 +60,10 @@ module.exports = {
       .then(checkEmail)
       .then((value) => {
         Customer.save(value);
-        const token = generateToken(value);
-        return res.status(200).json({ token });
+        Customer.findByName(value, (data) => {
+          const token = generateToken(data[0]);
+          return res.status(200).json({ token });
+        });
       })
       .catch((err) => res.status(400).json({ message: err }));
   },
@@ -130,6 +131,11 @@ module.exports = {
   bookingRoom: (req, res) => {
     Room.saveBooking(req.body);
     res.status(200).json("dat phong thanh cong!");
+  },
+  cancelBooking: (req, res) => {
+    const id = req.params.id;
+    Room.deleteBooking(id);
+    return res.status(200).json("xoa thanh cong");
   },
   getBookingById: (req, res) => {
     const id = req.params.id;
