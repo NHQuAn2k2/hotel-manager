@@ -1,8 +1,12 @@
 import { Box, Divider, Grid, Paper, Stack, Typography } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
 import { FmdGoodOutlinedIcon } from "../../icon";
+import { BookingContext } from "../../context/BookingContext";
+import dayjs from "dayjs";
+import { formatNumber } from "../../utils";
 
-export default function LayoutBooking({ hotel, component }) {
+export default function LayoutBooking({ hotel, children }) {
+  const { booking } = useContext(BookingContext);
   return (
     <Grid container sx={{ pt: 4, pb: 1 }} spacing={3}>
       <Grid item xs={4}>
@@ -28,7 +32,9 @@ export default function LayoutBooking({ hotel, component }) {
                 Nhan phong
               </Typography>
               <Typography variant="body1">
-                T7, 30 thang 12 <br /> 2024
+                {dayjs(booking.ngay_nhan)
+                  .locale("vi")
+                  .format("dddd, D [thang] M [nam] YYYY")}
               </Typography>
             </Grid>
             <Divider orientation="vertical" flexItem />
@@ -37,7 +43,9 @@ export default function LayoutBooking({ hotel, component }) {
                 Tra phong
               </Typography>
               <Typography variant="body1">
-                T7, 30 thang 12 <br /> 2024
+                {dayjs(booking.ngay_tra)
+                  .locale("vi")
+                  .format("dddd, D [thang] M [nam] YYYY")}
               </Typography>
             </Grid>
           </Grid>
@@ -49,13 +57,14 @@ export default function LayoutBooking({ hotel, component }) {
           >
             Tong thoi gian luu tru:
           </Typography>
-          <Typography variant="body1">1 dem</Typography>
+          <Typography variant="body1">{booking.so_dem} dem</Typography>
           <Divider style={{ marginTop: 16, marginBottom: 16 }} />
           <Typography gutterBottom fontWeight={"bold"} variant="body2">
             Ban da chon
           </Typography>
           <Typography variant="body1">
-            1 phong cho 2 nguoi lon va 1 tre em
+            {booking.phong.length} phong cho {booking.nguoi_lon} nguoi lon{" "}
+            {booking.tre_em === 0 ? "" : " va " + booking.tre_em + " tre em"}
           </Typography>
         </Paper>
         <Paper variant="outlined" sx={{ marginTop: 2 }}>
@@ -72,13 +81,13 @@ export default function LayoutBooking({ hotel, component }) {
                 Gia:
               </Typography>
               <Typography fontWeight={"bold"} color={"white"} variant="h5">
-                2,375,000 VND
+                {formatNumber(booking.tong_tien)} VND
               </Typography>
             </Stack>
           </Box>
         </Paper>
       </Grid>
-      {component}
+      {children}
     </Grid>
   );
 }

@@ -6,12 +6,17 @@ import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
 export default function ContentFavourite() {
   return (
     <Box>
-      <Typography marginBottom={2} variant="h6" fontWeight={"bold"}>
+      <Typography
+        marginBottom={2}
+        variant="h6"
+        fontWeight={"bold"}
+        color={"black"}
+      >
         Khach San Ua Thich
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={3}>
-          <Paper elevation={4} sx={{ overflow: "hidden" }}>
+          <Paper sx={{ overflow: "hidden" }}>
             <Box sx={{ height: "250px" }}>
               <img alt="" src={image} />
             </Box>

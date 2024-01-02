@@ -3,6 +3,18 @@ const { generateToken } = require("../jwt/jwtService");
 const Hotel = require("../models/Hotel");
 const Room = require("../models/Room");
 const Review = require("../models/Review");
+const nodemailer = require("nodemailer");
+const emailSender = "mhoangquan0@gmail.com";
+const uuid = require("uuid");
+const pass = "ojkp fjvq hjih xhfs";
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: emailSender,
+    pass: pass,
+  },
+});
+const passwordResetTokens = {};
 module.exports = {
   login: (req, res) => {
     const checkEmail = () =>
@@ -129,8 +141,56 @@ module.exports = {
     res.status(200).json({ message: "xoa thanh cong" });
   },
   bookingRoom: (req, res) => {
-    Room.saveBooking(req.body);
-    res.status(200).json("dat phong thanh cong!");
+    function formatNumber(number) {
+      let formattedNumber = number.toLocaleString("en-US");
+      formattedNumber = formattedNumber.replace(/,/g, ",");
+      return formattedNumber;
+    }
+    Room.saveBooking(req.body, (ma_dat_phong) => {
+      const contentHtml = `<h1>Cam on ${
+        req.body.ho + " " + req.body.ten
+      }! Dat phong cua ban da duoc xac nhan.</h1>
+          <h3>Duoi day la thong tin chi tiet ve dat phong cua ban.</h3>
+          <ul>
+            <li>Ma dat phong: ${ma_dat_phong}</li>
+            <li>Ten nguoi dat: ${req.body.ho + " " + req.body.ten}</li>
+            <li>Ngay dat phong: ${req.body.ngay_dat}</li>
+            <li>So dien thoai lien he: ${req.body.so_dien_thoai}</li>
+            <li>Email: ${req.body.email}</li>
+            <li>Ngay nhan phong: ${req.body.ngay_nhan}</li>
+            <li>Ngay tra phong: ${req.body.ngay_tra}</li>
+            <li>Thoi gian den: ${req.body.thoi_gian_den}</li>
+            <li>Nguoi lon: ${req.body.nguoi_lon}</li>
+            <li>Tre em: ${req.body.tre_em}</li>
+            <li>Yeu cau dac biet: ${
+              req.body.yeu_cau_dac_biet === ""
+                ? "khong co"
+                : req.body.yeu_cau_dac_biet
+            }</li>
+            <li>So luong phong: ${req.body.phong.length}</li>
+            <li>Loai phong: ${req.body.loai_phong.join(", ")}</li>
+            <li><h4>Tong tien: ${formatNumber(req.body.tong_tien)} VND</h4></li>
+          </ul>
+          <h4>Chung toi rat mong duoc phuc vu ban va hy vong ban co mot ky nghi tuyet voi!</h4>
+          <h4>Tran trong.</h4>
+          `;
+      const contentSubject = `Khach san ${req.body.khach_san}`;
+      transporter.sendMail(
+        {
+          from: emailSender,
+          to: req.body.email,
+          subject: contentSubject,
+          html: contentHtml,
+        },
+        (error, infor) => {
+          if (error) {
+            return res.status(400).json(error);
+          } else {
+            return res.status(200).json(infor);
+          }
+        }
+      );
+    });
   },
   cancelBooking: (req, res) => {
     const id = req.params.id;
@@ -143,24 +203,43 @@ module.exports = {
       return res.status(200).json(data);
     });
   },
-  detailService: (req, res) => {
-    Service.findOne(req.params, (data) => {
-      res.status(200).json(data);
+  codePassword: (req, res) => {
+    const { email } = req.body;
+    Customer.findByEmail({ email }, (data) => {
+      if (data.length > 0) {
+        const resetToken = uuid.v4();
+        passwordResetTokens[data[0].ma_nguoi_dung] = resetToken;
+        transporter.sendMail(
+          {
+            from: emailSender,
+            to: email,
+            subject: "Doi mat khau",
+            html: `<div>Ma so reset mat khau cua ban la: ${resetToken}</div>
+            `,
+          },
+          (error, infor) => {
+            if (error) {
+              return res.status(400).json(error);
+            } else {
+              return res.status(200).json(infor);
+            }
+          }
+        );
+      } else {
+        return res.status(400).json({ message: "email sai!" });
+      }
     });
   },
-  addService: (req, res) => {
-    const data = { ...req.body, ma_khach_san: req.params.id };
-    Service.save(data);
-    res.status(200).json({ message: "them thanh cong" });
-  },
-  editService: (req, res) => {
-    const data = { ...req.body, ma_khach_san: req.params.id };
-    Service.update(data);
-    res.status(200).json({ message: "sua thanh cong" });
-  },
-  deleteService: (req, res) => {
-    const data = { ...req.body, ma_khach_san: req.params.id };
-    Service.delete(data);
-    res.status(200).json({ message: "xoa thanh cong" });
+  resetPassword: (req, res) => {
+    const { token } = req.params;
+    const { mat_khau_moi, xac_nhan_mat_khau } = req.body;
+    const ma_nguoi_dung = Object.keys(passwordResetTokens).find(
+      (id) => passwordResetTokens[id] === token
+    );
+    if (mat_khau_moi !== xac_nhan_mat_khau) {
+      return res.status(400).json({ message: "mat khau khong giong nhau!" });
+    }
+    Customer.updatePassword({ ma_nguoi_dung, mat_khau_moi });
+    return res.status(200).json({ message: "doi mat khau thanh cong!" });
   },
 };

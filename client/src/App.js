@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import {
   BookingPage,
+  ConfirmationPage,
   DetailPage,
   ErrorPage,
   HomePage,
@@ -18,6 +19,7 @@ function App() {
       </Route>
       <Route path="/booking/hotel/:id" element={<BookingPage />} />
       <Route path="/booking" element={<BookingStatusPage />} />
+      <Route path="/confirmation" element={<ConfirmationPage />} />
       <Route path="*" element={<ErrorPage />} />
     </Routes>
   );

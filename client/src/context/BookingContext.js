@@ -1,23 +1,37 @@
 import dayjs from "dayjs";
-import jwtDecode from "jwt-decode";
-import { createContext, useState } from "react";
-import { token } from "../utils";
+import { createContext, useEffect, useState } from "react";
 export const BookingContext = createContext();
+export const getDefaultBookingState = () => ({
+  ho: "",
+  ten: "",
+  email: "",
+  so_dien_thoai: "",
+  thoi_gian_den: "",
+  ngay_nhan: "",
+  ngay_tra: "",
+  nguoi_lon: 1,
+  tre_em: 0,
+  yeu_cau_dac_biet: "",
+  phong: [],
+  tong_tien: 0,
+  ngay_dat: dayjs().format("YYYY/MM/DD"),
+  phuong_thuc_thanh_toan: "truc tiep",
+  ma_nguoi_dung: "",
+  so_dem: 1,
+  khach_san: "",
+  loai_phong: [],
+});
 export const BookingProvider = ({ children }) => {
-  const [booking, setBooking] = useState({
-    ngay_dat: dayjs().format("YYYY/MM/DD"),
-    ngay_nhan: "",
-    ngay_tra: "",
-    nguoi_lon: 1,
-    tre_em: 0,
-    so_luong_phong: 0,
-    rooms: [],
-    services: [],
-    thanh_tien: "",
-    ma_nguoi_dung: token ? jwtDecode(token).ma : "",
+  const [booking, setBooking] = useState(() => {
+    const localData = localStorage.getItem("booking");
+    return localData ? JSON.parse(localData) : getDefaultBookingState();
   });
-  const value = { booking, setBooking };
+  useEffect(() => {
+    localStorage.setItem("booking", JSON.stringify(booking));
+  }, [booking]);
   return (
-    <BookingContext.Provider value={value}>{children}</BookingContext.Provider>
+    <BookingContext.Provider value={{ booking, setBooking }}>
+      {children}
+    </BookingContext.Provider>
   );
 };

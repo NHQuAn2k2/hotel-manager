@@ -15,4 +15,6 @@ router.post("/booking", jwtFilter, controllers.bookingRoom); //
 router.delete("/booking/:id", jwtFilter, controllers.cancelBooking);
 router.get("/booking/:id", jwtFilter, controllers.getBookingById); //
 router.post("/review/hotel/", jwtFilter, controllers.reviewHotel); //
+router.post("/code/password", controllers.codePassword); //
+router.post("/reset/password/:token", controllers.resetPassword); //
 module.exports = router;

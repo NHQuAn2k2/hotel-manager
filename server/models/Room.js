@@ -53,48 +53,63 @@ module.exports = {
       callback(result[0]);
     });
   },
-  saveBooking: (data) => {
+  saveBooking: (data, callback) => {
     const {
-      ngay_dat,
+      ho,
+      ten,
+      email,
+      so_dien_thoai,
+      thoi_gian_den,
       ngay_nhan,
       ngay_tra,
+      ngay_dat,
       nguoi_lon,
       tre_em,
+      yeu_cau_dac_biet,
+      phong = [],
       tong_tien,
-      rooms = [],
+      phuong_thuc_thanh_toan,
+      ngay_thanh_toan,
+      so_tien_thanh_toan,
       ma_nguoi_dung,
     } = data;
     const insertBooking = () => {
       return new Promise((resolve, reject) => {
         const query =
-          "INSERT INTO don_dat_phong (ngay_dat, ngay_nhan, ngay_tra, nguoi_lon, tre_em, tong_tien, ma_nguoi_dung) VALUES (?, ?, ?, ?, ?, ?, ?)";
+          "INSERT INTO don_dat_phong (ho, ten, email, so_dien_thoai, thoi_gian_den, ngay_nhan, ngay_tra, nguoi_lon, tre_em, yeu_cau_dac_biet, tong_tien, ma_nguoi_dung, ngay_dat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         const values = [
-          ngay_dat,
+          ho,
+          ten,
+          email,
+          so_dien_thoai,
+          thoi_gian_den,
           ngay_nhan,
           ngay_tra,
           nguoi_lon,
           tre_em,
+          yeu_cau_dac_biet,
           tong_tien,
           ma_nguoi_dung,
+          ngay_dat,
         ];
-        db.query(query, values, (err, result) => {
-          if (err) {
-            reject(err);
+        db.query(query, values, (error, result) => {
+          if (error) {
+            reject();
           } else {
             resolve(result.insertId);
           }
         });
       });
     };
-    const insertRoom = (ma_dat_phong) => {
+    const insertDetail = (ma_dat_phong) => {
       return new Promise((resolve, reject) => {
-        rooms.forEach((room) => {
+        phong.forEach((so_phong) => {
           const query =
-            "INSERT INTO chi_tiet_don_dat (ma_dat_phong, so_phong) VALUES (?, ?)";
-          const values = [ma_dat_phong, room];
-          db.query(query, values, (err) => {
-            if (err) {
-              reject(err);
+            "INSERT INTO chi_tiet_don_dat (ma_dat_phong, so_phong, trang_thai) VALUES (?,?,?)";
+          const values = [ma_dat_phong, so_phong, "da xac nhan"];
+          db.query(query, values, (error) => {
+            if (error) {
+              reject(error);
             } else {
               resolve();
             }
@@ -102,75 +117,49 @@ module.exports = {
         });
       });
     };
-    const updateStatusRoom = () => {
+    const insertPayment = (ma_dat_phong) => {
       return new Promise((resolve, reject) => {
-        rooms.forEach((room) => {
-          const query = "UPDATE phong SET tinh_trang = 1 WHERE so_phong = ?";
-          const values = [room];
-          db.query(query, values, (err) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve();
-            }
-          });
-        });
-      });
-    };
-    const runAll = async () => {
-      try {
-        const booking = await insertBooking();
-        await insertRoom(booking);
-        await updateStatusRoom();
-      } catch (error) {
-        throw error;
-      }
-    };
-    runAll();
-  },
-  getBooking: (data, callback) => {
-    const getBooking = () => {
-      return new Promise((resolve, reject) => {
-        const query =
-          "SELECT * FROM don_dat_phong WHERE don_dat_phong.ma_nguoi_dung = ?";
-        const values = [data];
-        db.query(query, values, (err, result) => {
-          if (err) {
-            reject(err);
+        let query;
+        let values;
+        if (phuong_thuc_thanh_toan === "online") {
+          query =
+            "INSERT INTO thanh_toan (phuong_thuc_thanh_toan, ngay_thanh_toan, so_tien_thanh_toan, trang_thai, ma_dat_phong) VALUES (?, ?, ?, ?, ?)";
+          values = [
+            phuong_thuc_thanh_toan,
+            ngay_thanh_toan,
+            so_tien_thanh_toan,
+            "da thanh toan",
+            ma_dat_phong,
+          ];
+        }
+        if (phuong_thuc_thanh_toan === "truc tiep") {
+          query =
+            "INSERT INTO thanh_toan (phuong_thuc_thanh_toan, trang_thai, ma_dat_phong) VALUES (?, ?, ?)";
+          values = [phuong_thuc_thanh_toan, "chua thanh toan", ma_dat_phong];
+        }
+        db.query(query, values, (error, result) => {
+          if (error) {
+            reject(error);
           } else {
-            resolve(result);
+            resolve();
           }
         });
       });
     };
-    const getRoom = (value) => {
-      return Promise.all(
-        value.map((item) => {
-          return new Promise((resolve, reject) => {
-            const query =
-              "SELECT * FROM phong JOIN chi_tiet_don_dat ON phong.so_phong = chi_tiet_don_dat.so_phong WHERE chi_tiet_don_dat.ma_dat_phong = ?";
-            const values = [item.ma_dat_phong];
-            db.query(query, values, (err, results) => {
-              if (err) {
-                reject(err);
-              } else {
-                resolve({ ...item, phong: results });
-              }
-            });
-          });
-        })
-      );
-    };
-    const getAll = async () => {
+    const run = async () => {
       try {
-        const booking = await getBooking();
-        const result = await getRoom(booking);
-        callback(result);
+        const ma_dat_phong = await insertBooking();
+        await insertDetail(ma_dat_phong);
+        await insertPayment(ma_dat_phong);
+        callback(ma_dat_phong);
       } catch (error) {
-        callback(error);
+        throw error;
       }
     };
-    getAll();
+    run();
+  },
+  getBooking: (data, callback) => {
+    console.log(data);
   },
   deleteBooking: (data) => {
     console.log(data);

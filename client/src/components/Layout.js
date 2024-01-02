@@ -3,7 +3,7 @@ import { Footer, Header, Search } from "./home";
 import { Stack } from "@mui/material";
 import { Outlet } from "react-router-dom";
 
-export default function Layout() {
+export default function Layout({ search = true, outlet = true, children }) {
   return (
     <div>
       <Header />
@@ -14,8 +14,9 @@ export default function Layout() {
         paddingX={5}
         paddingBottom={5}
       >
-        <Search />
-        <Outlet />
+        {search && <Search />}
+        {outlet && <Outlet />}
+        {children}
       </Stack>
       <Footer />
     </div>

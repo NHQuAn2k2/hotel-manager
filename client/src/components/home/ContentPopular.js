@@ -4,12 +4,17 @@ import React from "react";
 export default function ContentPopular() {
   return (
     <Box>
-      <Typography marginBottom={2} variant="h6" fontWeight={"bold"}>
+      <Typography
+        marginBottom={2}
+        variant="h6"
+        fontWeight={"bold"}
+        color={"black"}
+      >
         Diem Den Dang Thinh Hanh
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          <Paper elevation={4} sx={{ overflow: "hidden", borderRadius: 2 }}>
+          <Paper sx={{ overflow: "hidden", borderRadius: 2 }}>
             <Box sx={{ height: "250px" }}>
               <img
                 alt=""
@@ -19,7 +24,7 @@ export default function ContentPopular() {
           </Paper>
         </Grid>
         <Grid item xs={6}>
-          <Paper elevation={4} sx={{ overflow: "hidden", borderRadius: 2 }}>
+          <Paper sx={{ overflow: "hidden", borderRadius: 2 }}>
             <Box sx={{ height: "250px" }}>
               <img
                 alt=""
@@ -29,7 +34,7 @@ export default function ContentPopular() {
           </Paper>
         </Grid>
         <Grid item xs={4}>
-          <Paper elevation={4} sx={{ overflow: "hidden", borderRadius: 2 }}>
+          <Paper sx={{ overflow: "hidden", borderRadius: 2 }}>
             <Box sx={{ height: "250px" }}>
               <img
                 alt=""
@@ -39,7 +44,7 @@ export default function ContentPopular() {
           </Paper>
         </Grid>
         <Grid item xs={4}>
-          <Paper elevation={4} sx={{ overflow: "hidden", borderRadius: 2 }}>
+          <Paper sx={{ overflow: "hidden", borderRadius: 2 }}>
             <Box sx={{ height: "250px" }}>
               <img
                 alt=""
@@ -49,7 +54,7 @@ export default function ContentPopular() {
           </Paper>
         </Grid>
         <Grid item xs={4}>
-          <Paper elevation={4} sx={{ overflow: "hidden", borderRadius: 2 }}>
+          <Paper sx={{ overflow: "hidden", borderRadius: 2 }}>
             <Box sx={{ height: "250px" }}>
               <img
                 alt=""

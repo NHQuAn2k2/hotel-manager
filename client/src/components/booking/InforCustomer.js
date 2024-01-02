@@ -8,13 +8,17 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { InfoOutlinedIcon } from "../../icon";
+import { BookingContext } from "../../context/BookingContext";
 
 export default function InforCustomer({ hotel }) {
-  const [time, setTime] = useState("");
+  const { booking, setBooking } = useContext(BookingContext);
   const handleChangeTime = (e) => {
-    setTime(e.target.value);
+    setBooking((pre) => ({ ...pre, thoi_gian_den: e.target.value }));
+  };
+  const handleInputChange = (e) => {
+    setBooking((pre) => ({ ...pre, [e.target.name]: e.target.value }));
   };
   return (
     <Grid item xs={8}>
@@ -30,14 +34,31 @@ export default function InforCustomer({ hotel }) {
         />
         <Grid container paddingTop={2} spacing={2}>
           <Grid item xs={6}>
-            <TextField fullWidth variant="filled" label="Ho (tieng Anh) *" />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField fullWidth variant="filled" label="Ten (tieng Anh) *" />
+            <TextField
+              value={booking.ho}
+              name="ho"
+              onChange={handleInputChange}
+              fullWidth
+              variant="filled"
+              label="Ho (tieng Anh) *"
+            />
           </Grid>
           <Grid item xs={6}>
             <TextField
+              value={booking.ten}
+              name="ten"
+              onChange={handleInputChange}
               fullWidth
+              variant="filled"
+              label="Ten (tieng Anh) *"
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              value={booking.email}
+              fullWidth
+              name="email"
+              onChange={handleInputChange}
               type="email"
               variant="filled"
               label="Dia chi email *"
@@ -46,6 +67,9 @@ export default function InforCustomer({ hotel }) {
           </Grid>
           <Grid item xs={6}>
             <TextField
+              value={booking.so_dien_thoai}
+              name="so_dien_thoai"
+              onChange={handleInputChange}
               fullWidth
               type="number"
               variant="filled"
@@ -68,6 +92,10 @@ export default function InforCustomer({ hotel }) {
           Vui long ghi yeu cau dac biet cua ban tai day. (khong bat buoc)
         </Typography>
         <textarea
+          value={booking.yeu_cau_dac_biet}
+          onChange={(e) =>
+            setBooking((pre) => ({ ...pre, yeu_cau_dac_biet: e.target.value }))
+          }
           style={{
             maxWidth: "100%",
             minWidth: "100%",
@@ -88,7 +116,11 @@ export default function InforCustomer({ hotel }) {
           Them thoi gian den du kien cua ban *
         </Typography>
         <FormControl sx={{ width: "350px" }}>
-          <Select value={time} onChange={handleChangeTime} displayEmpty>
+          <Select
+            value={booking.thoi_gian_den}
+            onChange={handleChangeTime}
+            displayEmpty
+          >
             <MenuItem disabled value="">
               Vui long chon
             </MenuItem>

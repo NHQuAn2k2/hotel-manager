@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -7,10 +7,13 @@ import Button from "@mui/material/Button";
 import { Link, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { api } from "../utils";
+import { BookingContext } from "../context/BookingContext";
+import jwtDecode from "jwt-decode";
 
 export default function DialogLogin({ open, onClose = () => {} }) {
   const [login, setLogin] = useState({ email: "", mat_khau: "" });
   const [error, setError] = useState({ message: "" });
+  const { setBooking } = useContext(BookingContext);
   const handleChangeInput = (e) => {
     setLogin((pre) => ({ ...pre, [e.target.name]: e.target.value }));
   };
@@ -23,6 +26,7 @@ export default function DialogLogin({ open, onClose = () => {} }) {
       const res = await axios.post(`${api}/login`, login);
       const token = res.data.token;
       localStorage.setItem("token", token);
+      setBooking((pre) => ({ ...pre, ma_nguoi_dung: jwtDecode(token).ma }));
       window.location.reload();
       onClose();
     } catch (error) {

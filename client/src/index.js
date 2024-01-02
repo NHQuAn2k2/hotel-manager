@@ -6,6 +6,7 @@ import "./index.css";
 import { SearchProvider } from "./context/SearchContext";
 import { AuthProvider } from "./context/AuthContext";
 import { BookingProvider } from "./context/BookingContext";
+import { InforProvider } from "./context/InforCardContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -14,7 +15,9 @@ root.render(
       <SearchProvider>
         <AuthProvider>
           <BookingProvider>
-            <App />
+            <InforProvider>
+              <App />
+            </InforProvider>
           </BookingProvider>
         </AuthProvider>
       </SearchProvider>

@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api, apiImages, displayPerson, formatNumber } from "../utils";
 import {
@@ -26,11 +26,13 @@ import {
 import { DateRangePicker } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
 import dayjs from "dayjs";
+import { BookingContext } from "../context/BookingContext";
+import { AuthContext } from "../context/AuthContext";
 const { beforeToday } = DateRangePicker;
 export default function DetailPage() {
   const navigate = useNavigate();
-  const [night, setNight] = useState(1);
-  const [countPerson, setCountPerson] = useState({ nguoi_lon: 1, tre_em: 0 });
+  const { user } = useContext(AuthContext);
+  const { booking, setBooking } = useContext(BookingContext);
   const { id } = useParams();
   const [hotel, setHotel] = useState({});
   useEffect(() => {
@@ -38,21 +40,23 @@ export default function DetailPage() {
       try {
         const res = await axios.get(`${api}/hotel/${id}`);
         setHotel(res.data);
+        setBooking((pre) => ({ ...pre, khach_san: res.data.ten }));
       } catch (error) {
         console.log(error);
       }
     };
     getDetail();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
   const handleCountPerson = (field, actions) => {
     switch (actions) {
       case "increase":
-        setCountPerson((pre) => ({ ...pre, [field]: countPerson[field] + 1 }));
+        setBooking((pre) => ({ ...pre, [field]: booking[field] + 1 }));
         return;
       case "decrease":
-        if (field === "nguoi_lon" && countPerson[field] === 1) return;
-        if (field === "tre_em" && countPerson[field] === 0) return;
-        setCountPerson((pre) => ({ ...pre, [field]: countPerson[field] - 1 }));
+        if (field === "nguoi_lon" && booking[field] === 1) return;
+        if (field === "tre_em" && booking[field] === 0) return;
+        setBooking((pre) => ({ ...pre, [field]: booking[field] - 1 }));
         return;
       default:
         return;
@@ -62,17 +66,56 @@ export default function DetailPage() {
     if (!date) return;
     const ngay_nhan = dayjs(date[0]).format("YYYY/MM/DD");
     const ngay_tra = dayjs(date[1]).format("YYYY/MM/DD");
+    setBooking((pre) => ({
+      ...pre,
+      ngay_nhan: ngay_nhan,
+      ngay_tra: ngay_tra,
+      tong_tien: 0,
+      phong: [],
+    }));
     if (ngay_nhan && ngay_tra) {
       const so_dem = dayjs(ngay_tra).diff(dayjs(ngay_nhan), "day");
-      so_dem === 0 ? setNight(1) : setNight(so_dem);
+      so_dem === 0
+        ? setBooking((pre) => ({ ...pre, so_dem: 1 }))
+        : setBooking((pre) => ({ ...pre, so_dem }));
+    }
+  };
+  const handleChooseRoom = (e, so_phong, gia, loai_phong) => {
+    const checked = e.target.checked;
+    if (checked) {
+      setBooking((pre) => ({
+        ...pre,
+        phong: [...pre.phong, so_phong],
+        loai_phong: [...pre.loai_phong, loai_phong],
+        tong_tien: (pre.tong_tien += gia),
+      }));
+    } else {
+      setBooking((pre) => ({
+        ...pre,
+        phong: pre.phong.filter((item) => item !== so_phong),
+        loai_phong: pre.loai_phong.filter((item) => item !== loai_phong),
+        tong_tien: (pre.tong_tien -= gia),
+      }));
     }
   };
   const handleBooking = () => {
+    if (user === "") {
+      alert("ban chua dang nhap hoac dang ky!");
+      return;
+    }
+    if (booking.ngay_nhan === "" || booking.ngay_tra === "") {
+      alert("ban chua chon ngay nhan va ngay tra!");
+      return;
+    }
+    if (booking.phong.length <= 0) {
+      alert("ban chua chon phong!");
+      return;
+    }
     navigate("/booking/hotel/" + id);
   };
   return (
     <Box>
-      <Typography marginBottom={1} variant="h5">
+      <Typography color={"black"} marginBottom={1} variant="h5">
         {hotel.ten}
       </Typography>
       <Stack
@@ -90,10 +133,10 @@ export default function DetailPage() {
         </Box>
         <Stack flexDirection={"column"} justifyContent={"space-between"}>
           <Box>
-            <Typography variant="h6" fontWeight={"bold"}>
+            <Typography color={"black"} variant="h6" fontWeight={"bold"}>
               Mo Ta
             </Typography>
-            <Typography>{hotel.mo_ta}</Typography>
+            <Typography color={"black"}>{hotel.mo_ta}</Typography>
           </Box>
           <Box>
             <Stack
@@ -103,12 +146,18 @@ export default function DetailPage() {
               alignItems={"end"}
             >
               <Stack flexDirection={"column"} rowGap={1}>
-                <Typography variant="h6" fontWeight={"bold"}>
+                <Typography color={"black"} variant="h6" fontWeight={"bold"}>
                   Phong trong
                 </Typography>
                 <DateRangePicker
                   format="dd/MM/yyyy"
-                  placeholder="Ngay Nhan Phong - Ngay Tra Phong"
+                  placeholder={
+                    booking.ngay_nhan && booking.ngay_tra
+                      ? dayjs(booking.ngay_nhan).format("DD/MM/YYYY") +
+                        " ~ " +
+                        dayjs(booking.ngay_tra).format("DD/MM/YYYY")
+                      : "Ngay Nhan Phong - Ngay Tra Phong"
+                  }
                   shouldDisableDate={beforeToday()}
                   style={{ width: "400px" }}
                   size="lg"
@@ -116,7 +165,7 @@ export default function DetailPage() {
                 />
               </Stack>
               <Stack flexDirection={"column"} alignItems={"center"}>
-                <Typography>Nguoi Lon</Typography>
+                <Typography color={"black"}>Nguoi Lon</Typography>
                 <Stack
                   flexDirection={"row"}
                   alignItems={"center"}
@@ -127,7 +176,7 @@ export default function DetailPage() {
                   >
                     <RemoveCircleIcon color="primary" />
                   </IconButton>
-                  <Typography>{countPerson.nguoi_lon}</Typography>
+                  <Typography>{booking.nguoi_lon}</Typography>
                   <IconButton
                     onClick={() => handleCountPerson("nguoi_lon", "increase")}
                   >
@@ -136,7 +185,7 @@ export default function DetailPage() {
                 </Stack>
               </Stack>
               <Stack flexDirection={"column"} alignItems={"center"}>
-                <Typography>Tre Em</Typography>
+                <Typography color={"black"}>Tre Em</Typography>
                 <Stack
                   flexDirection={"row"}
                   alignItems={"center"}
@@ -147,7 +196,7 @@ export default function DetailPage() {
                   >
                     <RemoveCircleIcon color="primary" />
                   </IconButton>
-                  <Typography>{countPerson.tre_em}</Typography>
+                  <Typography>{booking.tre_em}</Typography>
                   <IconButton
                     onClick={() => handleCountPerson("tre_em", "increase")}
                   >
@@ -197,11 +246,21 @@ export default function DetailPage() {
                         </TableCell>
                         <TableCell>
                           <Typography>
-                            {formatNumber(item.gia_phong * night)} VND
+                            {formatNumber(item.gia_phong * booking.so_dem)} VND
                           </Typography>
                         </TableCell>
                         <TableCell>
-                          <Checkbox />
+                          <Checkbox
+                            checked={booking.phong.includes(item.so_phong)}
+                            onChange={(e) =>
+                              handleChooseRoom(
+                                e,
+                                item.so_phong,
+                                item.gia_phong * booking.so_dem,
+                                item.loai_phong
+                              )
+                            }
+                          />
                         </TableCell>
                       </TableRow>
                     ))}

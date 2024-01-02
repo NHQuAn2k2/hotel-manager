@@ -10,6 +10,7 @@ export default function BookingStatusPage() {
     subTitle: "dat phong cua ban toi cho nghi...",
     icon: <UploadIcon sx={{ fontSize: "45px" }} />,
   });
+
   useEffect(() => {
     const simulateBookingProcess = async () => {
       setBookingStatus({

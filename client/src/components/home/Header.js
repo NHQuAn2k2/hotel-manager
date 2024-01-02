@@ -14,9 +14,11 @@ import DialogRegister from "../DialogRegister";
 import DialogLogin from "../DialogLogin";
 import { AuthContext } from "../../context/AuthContext";
 import { AccountCircleIcon } from "../../icon";
+import { BookingContext } from "../../context/BookingContext";
 export default function Header() {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
+  const { setBooking } = useContext(BookingContext);
   const [open, setOpen] = useState({ register: false, login: false });
   const handleOpenDialog = (field) => {
     setOpen((pre) => ({ ...pre, [field]: true }));
@@ -26,6 +28,7 @@ export default function Header() {
   };
   const handleLogout = () => {
     localStorage.removeItem("token");
+    setBooking((pre) => ({ ...pre, ma_nguoi_dung: "" }));
     window.location.reload();
   };
   return (
@@ -78,6 +81,7 @@ export default function Header() {
               </>
             ) : (
               <>
+                <Button color="inherit">dat phong</Button>
                 <Button onClick={handleLogout} color="inherit">
                   dang xuat
                 </Button>
