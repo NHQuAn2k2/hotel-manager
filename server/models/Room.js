@@ -201,6 +201,42 @@ module.exports = {
     });
   },
   deleteBooking: (data) => {
-    console.log(data);
+    const handleCancel = () => {
+      return new Promise((resolve, reject) => {
+        const query =
+          "UPDATE chi_tiet_don_dat SET trang_thai = ? WHERE ma_dat_phong = ?";
+        const values = ["da huy", data];
+        db.query(query, values, (error) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve();
+          }
+        });
+      });
+    };
+    const updateStatusRoom = () => {
+      return new Promise((resolve, reject) => {
+        const query =
+          "UPDATE phong JOIN chi_tiet_don_dat ON phong.so_phong = chi_tiet_don_dat.so_phong SET tinh_trang = ? WHERE chi_tiet_don_dat.ma_dat_phong = ?";
+        const values = [0, data];
+        db.query(query, values, (error) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve();
+          }
+        });
+      });
+    };
+    const run = async () => {
+      try {
+        await handleCancel();
+        await updateStatusRoom();
+      } catch (error) {
+        throw error;
+      }
+    };
+    run();
   },
 };

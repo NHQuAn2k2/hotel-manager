@@ -2,6 +2,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import {
   BookingPage,
   BookingStatusPage,
+  CancelPage,
   ConfirmationPage,
   DetailPage,
   ErrorPage,
@@ -51,6 +52,7 @@ function App() {
       <Route path="/booking/hotel/:id" element={<BookingPage />} />
       <Route path="/booking" element={<BookingStatusPage />} />
       <Route path="/confirmation" element={<ConfirmationPage />} />
+      <Route path="/cancel/booking" element={<CancelPage />} />
       <Route path="*" element={<ErrorPage />} />
       <Route path="/test" element={<TestPage />} />
       <Route path="/forgot/password" element={<ForgotPasswordPage />} />

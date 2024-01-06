@@ -193,9 +193,29 @@ module.exports = {
     });
   },
   cancelBooking: (req, res) => {
-    const id = req.params.id;
+    const { id, email, ten_khach_san } = req.params;
     Room.deleteBooking(id);
-    return res.status(200).json("xoa thanh cong");
+    const contentHtml = `<h1>Don dat phong cua ban da duoc huy.</h1>
+    <h4>Ma dat phong: ${id}</h4>
+          <h4>Chung toi hy vong co the gap lai ban!</h4>
+          <h4>Tran trong.</h4>
+          `;
+    const contentSubject = `Khach san ${ten_khach_san}`;
+    transporter.sendMail(
+      {
+        from: emailSender,
+        to: email,
+        subject: contentSubject,
+        html: contentHtml,
+      },
+      (error, infor) => {
+        if (error) {
+          return res.status(400).json(error);
+        } else {
+          return res.status(200).json(infor);
+        }
+      }
+    );
   },
   getBookingById: (req, res) => {
     const id = req.params.id;
