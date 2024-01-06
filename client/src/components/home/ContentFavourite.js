@@ -1,6 +1,5 @@
 import { Box, Button, Grid, Paper, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import image from "../../asset/hotel.jpg";
 import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
 import axios from "axios";
 import { api, apiImages } from "../../utils";
