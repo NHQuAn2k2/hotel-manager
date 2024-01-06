@@ -15,6 +15,8 @@ import DialogLogin from "../DialogLogin";
 import { AuthContext } from "../../context/AuthContext";
 import { AccountCircleIcon } from "../../icon";
 import { BookingContext } from "../../context/BookingContext";
+import { token } from "../../utils";
+import jwtDecode from "jwt-decode";
 export default function Header() {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
@@ -81,7 +83,16 @@ export default function Header() {
               </>
             ) : (
               <>
-                <Button color="inherit">dat phong</Button>
+                <Button
+                  onClick={() =>
+                    navigate(
+                      `/list/booking/user/${token ? jwtDecode(token).ma : ""}`
+                    )
+                  }
+                  color="inherit"
+                >
+                  dat phong
+                </Button>
                 <Button onClick={handleLogout} color="inherit">
                   dang xuat
                 </Button>

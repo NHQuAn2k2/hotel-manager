@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const jwtFilter = require("../jwt/jwtFilter");
 const controllers = require("../controllers/index");
-router.get("/hotel", jwtFilter, controllers.viewHotel); //
+router.get("/hotel", controllers.viewHotel); //
 router.get("/hotel/:id", controllers.detailHotel); //
 router.get("/results", controllers.searchHotel); // tim theo ten or dia_chi
 router.post("/hotel", jwtFilter, controllers.addHotel); //
@@ -16,5 +16,6 @@ router.delete("/booking/:id", jwtFilter, controllers.cancelBooking);
 router.get("/booking/:id", jwtFilter, controllers.getBookingById); //
 router.post("/review/hotel/", jwtFilter, controllers.reviewHotel); //
 router.post("/code/password", controllers.codePassword); //
-router.post("/reset/password/:token", controllers.resetPassword); //
+router.post("/verify/password/", controllers.verifyCode); //
+router.post("/reset/password/", controllers.resetPassword); //
 module.exports = router;

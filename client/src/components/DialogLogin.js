@@ -63,7 +63,7 @@ export default function DialogLogin({ open, onClose = () => {} }) {
           name="mat_khau"
           label="Mat Khau"
         />
-        <Link href="#">Quen mat khau?</Link>
+        <Link href="/forgot/password">Quen mat khau?</Link>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} size="small" variant="outlined">

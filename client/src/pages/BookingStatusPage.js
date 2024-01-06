@@ -31,7 +31,7 @@ export default function BookingStatusPage() {
         icon: <DoneIcon sx={{ fontSize: "45px" }} />,
       });
       await new Promise((resolve) => setTimeout(resolve, 7000));
-      navigate("/");
+      navigate("/confirmation");
       window.location.reload();
     };
     simulateBookingProcess();

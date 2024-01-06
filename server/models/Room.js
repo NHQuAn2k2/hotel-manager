@@ -1,4 +1,5 @@
 const db = require("../mysqlConfig").getDb();
+const Hotel = require("./Hotel");
 module.exports = {
   save: (data) => {
     const { loai_phong, gia_phong, mo_ta, so_luong_khach, ma_khach_san } = data;
@@ -126,8 +127,8 @@ module.exports = {
             "INSERT INTO thanh_toan (phuong_thuc_thanh_toan, ngay_thanh_toan, so_tien_thanh_toan, trang_thai, ma_dat_phong) VALUES (?, ?, ?, ?, ?)";
           values = [
             phuong_thuc_thanh_toan,
-            ngay_thanh_toan,
-            so_tien_thanh_toan,
+            new Date(),
+            tong_tien,
             "da thanh toan",
             ma_dat_phong,
           ];
@@ -146,9 +147,25 @@ module.exports = {
         });
       });
     };
+    const updateStatusRoom = () => {
+      return new Promise((resolve, reject) => {
+        phong.forEach((room) => {
+          const query = "UPDATE phong SET tinh_trang = 1 WHERE so_phong = ?";
+          const values = [room];
+          db.query(query, values, (error) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve();
+            }
+          });
+        });
+      });
+    };
     const run = async () => {
       try {
         const ma_dat_phong = await insertBooking();
+        await updateStatusRoom();
         await insertDetail(ma_dat_phong);
         await insertPayment(ma_dat_phong);
         callback(ma_dat_phong);
@@ -159,7 +176,29 @@ module.exports = {
     run();
   },
   getBooking: (data, callback) => {
-    console.log(data);
+    const uniqueMaDatPhong = {};
+    const query = `SELECT don_dat_phong.ma_dat_phong, ho, don_dat_phong.ten, email, so_dien_thoai, thoi_gian_den, ngay_nhan, ngay_tra, nguoi_lon, tre_em, yeu_cau_dac_biet, tong_tien, ngay_dat, phong.ma_khach_san, loai_phong, chi_tiet_don_dat.trang_thai, phuong_thuc_thanh_toan, ngay_thanh_toan, thanh_toan.trang_thai AS thanh_toan, khach_san.ten AS ten_khach_san 
+    FROM don_dat_phong 
+    JOIN chi_tiet_don_dat ON don_dat_phong.ma_dat_phong = chi_tiet_don_dat.ma_dat_phong 
+    JOIN phong ON chi_tiet_don_dat.so_phong = phong.so_phong
+    JOIN khach_san ON khach_san.ma_khach_san = phong.ma_khach_san 
+    JOIN thanh_toan ON thanh_toan.ma_dat_phong = don_dat_phong.ma_dat_phong 
+    WHERE ma_nguoi_dung = ?`;
+    db.query(query, [data], (error, result) => {
+      if (error) throw error;
+      result.forEach((item) => {
+        const maDatPhong = item.ma_dat_phong;
+        const { loai_phong, ma_khach_san, ...rest } = item;
+        if (!uniqueMaDatPhong[maDatPhong]) {
+          uniqueMaDatPhong[maDatPhong] = {
+            ...rest,
+            phong: [],
+          };
+        }
+        uniqueMaDatPhong[maDatPhong].phong.push(item.loai_phong);
+      });
+      callback(Object.values(uniqueMaDatPhong));
+    });
   },
   deleteBooking: (data) => {
     console.log(data);

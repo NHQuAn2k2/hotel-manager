@@ -213,8 +213,8 @@ module.exports = {
           {
             from: emailSender,
             to: email,
-            subject: "Doi mat khau",
-            html: `<div>Ma so reset mat khau cua ban la: ${resetToken}</div>
+            subject: "Booking.com: Doi mat khau",
+            html: `<h3>Ma so reset mat khau cua ban la: ${resetToken}</h3>
             `,
           },
           (error, infor) => {
@@ -226,18 +226,26 @@ module.exports = {
           }
         );
       } else {
-        return res.status(400).json({ message: "email sai!" });
+        return res.status(400).json({ message: "email khong ton tai!" });
       }
     });
   },
-  resetPassword: (req, res) => {
-    const { token } = req.params;
-    const { mat_khau_moi, xac_nhan_mat_khau } = req.body;
+  verifyCode: (req, res) => {
+    const { resetToken } = req.body;
     const ma_nguoi_dung = Object.keys(passwordResetTokens).find(
-      (id) => passwordResetTokens[id] === token
+      (id) => passwordResetTokens[id] === resetToken
     );
+    if (!ma_nguoi_dung) {
+      return res.status(400).json({ message: "ma xac thuc khong dung!" });
+    }
+    return res
+      .status(200)
+      .json({ message: "xac thuc thanh cong!", ma_nguoi_dung });
+  },
+  resetPassword: (req, res) => {
+    const { ma_nguoi_dung, mat_khau_moi, xac_nhan_mat_khau } = req.body;
     if (mat_khau_moi !== xac_nhan_mat_khau) {
-      return res.status(400).json({ message: "mat khau khong giong nhau!" });
+      return res.status(400).json({ message: "xac nhan mat khau khong dung!" });
     }
     Customer.updatePassword({ ma_nguoi_dung, mat_khau_moi });
     return res.status(200).json({ message: "doi mat khau thanh cong!" });

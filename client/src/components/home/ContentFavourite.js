@@ -1,9 +1,23 @@
 import { Box, Button, Grid, Paper, Stack, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import image from "../../asset/hotel.jpg";
 import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
+import axios from "axios";
+import { api, apiImages } from "../../utils";
 
 export default function ContentFavourite() {
+  const [hotel, setHotel] = useState([]);
+  useEffect(() => {
+    const getAllHotel = async () => {
+      try {
+        const res = await axios.get(`${api}/hotel`);
+        setHotel(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getAllHotel();
+  }, []);
   return (
     <Box>
       <Typography
@@ -15,51 +29,42 @@ export default function ContentFavourite() {
         Khach San Ua Thich
       </Typography>
       <Grid container spacing={2}>
-        <Grid item xs={3}>
-          <Paper sx={{ overflow: "hidden" }}>
-            <Box sx={{ height: "250px" }}>
-              <img alt="" src={image} />
-            </Box>
-            <Box padding={2}>
-              <Typography
-                fontWeight={"bold"}
-                gutterBottom
-                // sx={{
-                //   width: "300px",
-                //   overflow: "hidden",
-                //   whiteSpace: "nowrap",
-                //   textOverflow: "ellipsis",
-                // }}
+        {hotel.length > 0 &&
+          hotel.slice(0, 4).map((item) => (
+            <Grid key={item.ma_khach_san} item xs={3}>
+              <Paper
+                variant="outlined"
+                sx={{
+                  overflow: "hidden",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
               >
-                Metropole by KT Residences - Infinity Saltwater Pool- Sauna -
-                Gym
-              </Typography>
-              <Stack flexDirection={"row"} alignItems={"center"} columnGap={1}>
-                <FmdGoodOutlinedIcon color="primary" />
-                <Typography variant="caption">
-                  20 Nguyen Thien Thanh, Quan 2, TP. Ho Chi Minh
-                </Typography>
-              </Stack>
-              <Button
-                sx={{ marginTop: 3 }}
-                fullWidth
-                variant="contained"
-                size="small"
-              >
-                xem chi tiet
-              </Button>
-            </Box>
-          </Paper>
-        </Grid>
-        <Grid item xs={3}>
-          1
-        </Grid>
-        <Grid item xs={3}>
-          1
-        </Grid>
-        <Grid item xs={3}>
-          1
-        </Grid>
+                <Box sx={{ height: "250px" }}>
+                  <img alt="" src={`${apiImages}/${item.hinh_anh}`} />
+                </Box>
+                <Box padding={2} flex={1}>
+                  <Typography fontWeight={"bold"} gutterBottom>
+                    {item.ten}
+                  </Typography>
+                  <Stack
+                    flexDirection={"row"}
+                    alignItems={"center"}
+                    columnGap={1}
+                  >
+                    <FmdGoodOutlinedIcon color="primary" />
+                    <Typography variant="caption">{item.dia_chi}</Typography>
+                  </Stack>
+                </Box>
+                <Box padding={2}>
+                  <Button fullWidth variant="contained" size="small">
+                    xem chi tiet
+                  </Button>
+                </Box>
+              </Paper>
+            </Grid>
+          ))}
       </Grid>
     </Box>
   );
