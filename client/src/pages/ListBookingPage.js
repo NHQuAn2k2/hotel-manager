@@ -4,6 +4,7 @@ import {
   AccordionSummary,
   Box,
   Button,
+  Divider,
   Grid,
   Stack,
   Typography,
@@ -15,7 +16,6 @@ import jwtDecode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { DialogCancelBooking } from "../components";
-import { Divider } from "rsuite";
 export default function ListBookingPage() {
   const navigate = useNavigate();
   const [listBooking, setListBooking] = useState([]);
@@ -82,6 +82,7 @@ export default function ListBookingPage() {
                     </Typography>
                   </Stack>
                 </AccordionSummary>
+                <Divider />
                 <AccordionDetails>
                   <Typography marginBottom={2}>
                     <strong>Ma dat phong:</strong> {item.ma_dat_phong}
@@ -142,20 +143,26 @@ export default function ListBookingPage() {
                       ? dayjs(item.ngay_thanh_toan).format("DD/MM/YYYY")
                       : "chua thanh toan"}
                   </Typography>
-                  <Typography variant="h6" marginTop={2}>
-                    <strong>Tong tien:</strong> {formatNumber(item.tong_tien)}{" "}
-                    VND
-                  </Typography>
-                  {item.trang_thai === "da xac nhan" && (
-                    <Button
-                      size="small"
-                      sx={{ marginTop: 2 }}
-                      variant="contained"
-                      onClick={() => setOpen(true)}
-                    >
-                      huy dat phong
-                    </Button>
-                  )}
+                  <Stack
+                    flexDirection={"row"}
+                    justifyContent={"space-between"}
+                    alignItems={"center"}
+                  >
+                    <Typography variant="h6" marginTop={2}>
+                      <strong>Tong tien:</strong> {formatNumber(item.tong_tien)}{" "}
+                      VND
+                    </Typography>
+                    {item.trang_thai === "da xac nhan" && (
+                      <Button
+                        size="small"
+                        sx={{ marginTop: 2 }}
+                        variant="contained"
+                        onClick={() => setOpen(true)}
+                      >
+                        huy dat phong
+                      </Button>
+                    )}
+                  </Stack>
                 </AccordionDetails>
               </Accordion>
             </Grid>
