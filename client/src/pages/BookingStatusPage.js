@@ -18,19 +18,19 @@ export default function BookingStatusPage() {
         subTitle: "dat phong cua ban toi cho nghi...",
         icon: <UploadIcon sx={{ fontSize: "45px" }} />,
       });
-      await new Promise((resolve) => setTimeout(resolve, 7000));
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       setBookingStatus({
         title: "Dang nhan",
         subTitle: "xac nhan tu cho nghi...",
         icon: <DownloadIcon sx={{ fontSize: "45px" }} />,
       });
-      await new Promise((resolve) => setTimeout(resolve, 7000));
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       setBookingStatus({
         title: "Dang xac nhan",
         subTitle: "dat phong cua ban.",
         icon: <DoneIcon sx={{ fontSize: "45px" }} />,
       });
-      await new Promise((resolve) => setTimeout(resolve, 7000));
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       navigate("/confirmation");
       window.location.reload();
     };

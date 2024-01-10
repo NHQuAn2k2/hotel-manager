@@ -11,7 +11,11 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import UploadIcon from "@mui/icons-material/Upload";
 import DownloadIcon from "@mui/icons-material/Download";
 import DoneIcon from "@mui/icons-material/Done";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import ApartmentIcon from "@mui/icons-material/Apartment";
 export {
+  ApartmentIcon,
+  WarningAmberIcon,
   DoneIcon,
   DownloadIcon,
   UploadIcon,

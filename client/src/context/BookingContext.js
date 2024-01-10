@@ -1,7 +1,9 @@
 import dayjs from "dayjs";
+import jwtDecode from "jwt-decode";
 import { createContext, useEffect, useState } from "react";
+import { token } from "../utils";
 export const BookingContext = createContext();
-export const getDefaultBookingState = () => ({
+export const getDefaultBookingState = {
   ho: "",
   ten: "",
   email: "",
@@ -16,15 +18,17 @@ export const getDefaultBookingState = () => ({
   tong_tien: 0,
   ngay_dat: dayjs().format("YYYY/MM/DD"),
   phuong_thuc_thanh_toan: "truc tiep",
-  ma_nguoi_dung: "",
+  ma_nguoi_dung: token ? jwtDecode(token).ma : "",
   so_dem: 1,
   khach_san: "",
   loai_phong: [],
-});
+  so_luong_khach: 1,
+  so_luong_khach_toi_da: 0,
+};
 export const BookingProvider = ({ children }) => {
   const [booking, setBooking] = useState(() => {
     const localData = localStorage.getItem("booking");
-    return localData ? JSON.parse(localData) : getDefaultBookingState();
+    return localData ? JSON.parse(localData) : getDefaultBookingState;
   });
   useEffect(() => {
     localStorage.setItem("booking", JSON.stringify(booking));

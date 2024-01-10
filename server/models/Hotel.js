@@ -74,11 +74,12 @@ module.exports = {
       if (err) throw err;
     });
   },
-  updateById: (data) => {
+  updateById: (data, dataFile) => {
     const { ma_khach_san, ten, dia_chi, mo_ta } = data;
+    const hinh_anh = dataFile;
     const query =
-      "UPDATE khach_san SET ten = ?, dia_chi = ?, mo_ta = ? WHERE ma_khach_san = ?";
-    const values = [ten, dia_chi, mo_ta, ma_khach_san];
+      "UPDATE khach_san SET ten = ?, dia_chi = ?, mo_ta = ?, hinh_anh = ? WHERE ma_khach_san = ?";
+    const values = [ten, dia_chi, mo_ta, hinh_anh, ma_khach_san];
     db.query(query, values, (err) => {
       if (err) throw err;
     });

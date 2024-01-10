@@ -18,6 +18,7 @@ export default function DialogLogin({ open, onClose = () => {} }) {
     setLogin((pre) => ({ ...pre, [e.target.name]: e.target.value }));
   };
   const handleLogin = async () => {
+    const regex = /^[a-zA-Z] +$/;
     try {
       if (login.email === "" || login.mat_khau === "") {
         setError({ message: "ban chua nhap day du thong tin!" });
@@ -35,7 +36,9 @@ export default function DialogLogin({ open, onClose = () => {} }) {
   };
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Dang Nhap</DialogTitle>
+      <DialogTitle fontWeight={"bold"} color={"Highlight"}>
+        Dang Nhap
+      </DialogTitle>
       <DialogContent
         sx={{
           width: "400px",
@@ -51,24 +54,23 @@ export default function DialogLogin({ open, onClose = () => {} }) {
         )}
         <TextField
           onChange={handleChangeInput}
-          variant="standard"
+          variant="outlined"
           type="email"
           name="email"
-          label="Email"
+          placeholder="Email"
+          fullWidth
         />
         <TextField
           onChange={handleChangeInput}
-          variant="standard"
+          variant="outlined"
           type="password"
           name="mat_khau"
-          label="Mat Khau"
+          placeholder="Mat Khau"
+          fullWidth
         />
-        <Link href="/forgot/password">Quen mat khau?</Link>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} size="small" variant="outlined">
-          huy bo
-        </Button>
+        <Link href="/forgot/password">Quen mat khau?</Link>
         <Button onClick={handleLogin} size="small" variant="contained">
           dang nhap
         </Button>

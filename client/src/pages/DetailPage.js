@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { api, apiImages, displayPerson, formatNumber } from "../utils";
+import { api, apiImages, displayPerson, formatNumber, token } from "../utils";
 import {
   Box,
   Checkbox,
@@ -16,8 +16,12 @@ import {
   Typography,
   IconButton,
   Button,
+  TextField,
+  Grid,
+  Chip,
 } from "@mui/material";
 import {
+  AccountCircleIcon,
   AddCircleIcon,
   BedIcon,
   FmdGoodOutlinedIcon,
@@ -28,13 +32,56 @@ import "rsuite/dist/rsuite.min.css";
 import dayjs from "dayjs";
 import { BookingContext } from "../context/BookingContext";
 import { AuthContext } from "../context/AuthContext";
+import jwtDecode from "jwt-decode";
 const { beforeToday } = DateRangePicker;
 export default function DetailPage() {
+  const [total, setTotal] = useState(() => {
+    const total = localStorage.getItem("total");
+    return total ? Number(total) : 1;
+  });
+  const [totalHotel, setTotalHotel] = useState(() => {
+    const total = localStorage.getItem("totalHotel");
+    return total ? Number(total) : 0;
+  });
+  useEffect(() => {
+    localStorage.setItem("total", total);
+  }, [total]);
+  useEffect(() => {
+    localStorage.setItem("totalHotel", totalHotel);
+  }, [totalHotel]);
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const { booking, setBooking } = useContext(BookingContext);
   const { id } = useParams();
   const [hotel, setHotel] = useState({});
+  const [review, setReview] = useState({
+    diem_danh_gia: "",
+    noi_dung_danh_gia: "",
+    ngay_danh_gia: dayjs(new Date()).format("YYYY/MM/DD"),
+    ma_nguoi_dung: token ? jwtDecode(token).ma : "",
+    ma_khach_san: id,
+  });
+  const handleChangeInput = (e) => {
+    setReview((pre) => ({ ...pre, [e.target.name]: e.target.value }));
+  };
+  const handleReview = async () => {
+    if (user === "") {
+      alert("ban chua dang nhap!");
+      return;
+    }
+    if (review.noi_dung_danh_gia === "" || review.diem_danh_gia === "") {
+      alert("ban chua nhap du thong tin danh gia!");
+      return;
+    }
+    try {
+      await axios.post(`${api}/review/hotel`, review, {
+        headers: { Authorization: `Bearer ${token ? token : ""}` },
+      });
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     const getDetail = async () => {
       try {
@@ -52,11 +99,13 @@ export default function DetailPage() {
     switch (actions) {
       case "increase":
         setBooking((pre) => ({ ...pre, [field]: booking[field] + 1 }));
+        setTotal((pre) => (pre += 1));
         return;
       case "decrease":
         if (field === "nguoi_lon" && booking[field] === 1) return;
         if (field === "tre_em" && booking[field] === 0) return;
         setBooking((pre) => ({ ...pre, [field]: booking[field] - 1 }));
+        setTotal((pre) => (pre -= 1));
         return;
       default:
         return;
@@ -80,9 +129,10 @@ export default function DetailPage() {
         : setBooking((pre) => ({ ...pre, so_dem }));
     }
   };
-  const handleChooseRoom = (e, so_phong, gia, loai_phong) => {
+  const handleChooseRoom = (e, so_phong, gia, loai_phong, so_luong_khach) => {
     const checked = e.target.checked;
     if (checked) {
+      setTotalHotel((pre) => (pre += so_luong_khach));
       setBooking((pre) => ({
         ...pre,
         phong: [...pre.phong, so_phong],
@@ -90,6 +140,7 @@ export default function DetailPage() {
         tong_tien: (pre.tong_tien += gia),
       }));
     } else {
+      setTotalHotel((pre) => (pre -= so_luong_khach));
       setBooking((pre) => ({
         ...pre,
         phong: pre.phong.filter((item) => item !== so_phong),
@@ -109,6 +160,10 @@ export default function DetailPage() {
     }
     if (booking.phong.length <= 0) {
       alert("ban chua chon phong!");
+      return;
+    }
+    if (total > totalHotel) {
+      alert("so luong nguoi lon hon so luong toi da cua phong!");
       return;
     }
     navigate("/booking/hotel/" + id);
@@ -204,6 +259,10 @@ export default function DetailPage() {
                   </IconButton>
                 </Stack>
               </Stack>
+              <Stack flexDirection={"column"} alignItems={"start"} rowGap={1}>
+                <Typography>So ngay o: {booking.so_dem + 1}</Typography>
+                <Typography>So dem: {booking.so_dem}</Typography>
+              </Stack>
             </Stack>
             <TableContainer
               variant="outlined"
@@ -227,43 +286,52 @@ export default function DetailPage() {
                 </TableHead>
                 <TableBody>
                   {hotel?.phong?.length > 0 &&
-                    hotel?.phong?.map((item) => (
-                      <TableRow key={item.so_phong}>
-                        <TableCell>
-                          <Stack
-                            flexDirection={"row"}
-                            alignItems={"center"}
-                            columnGap={1}
-                            marginBottom={1}
-                          >
-                            <BedIcon />
-                            <Typography>{item.loai_phong}</Typography>
-                          </Stack>
-                          <Typography variant="body2">{item.mo_ta}</Typography>
-                        </TableCell>
-                        <TableCell>
-                          {displayPerson(item.so_luong_khach)}
-                        </TableCell>
-                        <TableCell>
-                          <Typography>
-                            {formatNumber(item.gia_phong * booking.so_dem)} VND
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Checkbox
-                            checked={booking.phong.includes(item.so_phong)}
-                            onChange={(e) =>
-                              handleChooseRoom(
-                                e,
-                                item.so_phong,
-                                item.gia_phong * booking.so_dem,
-                                item.loai_phong
-                              )
-                            }
-                          />
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    hotel?.phong?.map((item) => {
+                      if (item.tinh_trang === 1) {
+                        return null;
+                      }
+                      return (
+                        <TableRow key={item.so_phong}>
+                          <TableCell>
+                            <Stack
+                              flexDirection={"row"}
+                              alignItems={"center"}
+                              columnGap={1}
+                              marginBottom={1}
+                            >
+                              <BedIcon />
+                              <Typography>{item.loai_phong}</Typography>
+                            </Stack>
+                            <Typography variant="body2">
+                              {item.mo_ta}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            {displayPerson(item.so_luong_khach)}
+                          </TableCell>
+                          <TableCell>
+                            <Typography>
+                              {formatNumber(item.gia_phong * booking.so_dem)}{" "}
+                              VND
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Checkbox
+                              checked={booking.phong.includes(item.so_phong)}
+                              onChange={(e) =>
+                                handleChooseRoom(
+                                  e,
+                                  item.so_phong,
+                                  item.gia_phong * booking.so_dem,
+                                  item.loai_phong,
+                                  item.so_luong_khach
+                                )
+                              }
+                            />
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -277,6 +345,74 @@ export default function DetailPage() {
           </Box>
         </Stack>
       </Stack>
+      <Typography color={"black"} marginTop={3} marginBottom={2} variant="h5">
+        Danh gia
+      </Typography>
+      <Stack flexDirection={"row"} alignItems={"end"} columnGap={1}>
+        <AccountCircleIcon />
+        <TextField
+          variant="standard"
+          placeholder="Viet danh gia..."
+          sx={{ width: "400px" }}
+          name="noi_dung_danh_gia"
+          value={review.noi_dung_danh_gia}
+          onChange={handleChangeInput}
+        />
+        <TextField
+          type="number"
+          size="small"
+          sx={{ width: "100px" }}
+          variant="standard"
+          placeholder="Diem"
+          name="diem_danh_gia"
+          value={review.diem_danh_gia}
+          onChange={handleChangeInput}
+        />
+        <Button onClick={handleReview} size="small" variant="outlined">
+          binh luan
+        </Button>
+      </Stack>
+      <Grid container spacing={2} paddingTop={3}>
+        {hotel?.danh_gia?.length > 0 ? (
+          hotel?.danh_gia?.map((item) => (
+            <Grid key={item.ma_danh_gia} item xs={6}>
+              <Paper variant="outlined" sx={{ padding: 2 }}>
+                <Stack
+                  flexDirection={"row"}
+                  alignItems={"center"}
+                  justifyContent={"space-between"}
+                >
+                  <Stack
+                    flexDirection={"row"}
+                    alignItems={"center"}
+                    columnGap={1}
+                  >
+                    <AccountCircleIcon sx={{ fontSize: "30px" }} />
+                    <Typography fontWeight={"bold"}>{item.ten}</Typography>
+                    <Chip
+                      variant="outlined"
+                      sx={{
+                        fontWeight: "bold",
+                        color: "Highlight",
+                        borderColor: "Highlight",
+                      }}
+                      label={item.diem_danh_gia}
+                    />
+                  </Stack>
+                  <Typography variant="body2">
+                    {dayjs(item.ngay_danh_gia).format("DD/MM/YYYY")}
+                  </Typography>
+                </Stack>
+                <Typography marginTop={2}>{item.noi_dung_danh_gia}</Typography>
+              </Paper>
+            </Grid>
+          ))
+        ) : (
+          <Grid item xs={12}>
+            <Typography>Chua co danh gia nao!</Typography>
+          </Grid>
+        )}
+      </Grid>
     </Box>
   );
 }

@@ -239,4 +239,12 @@ module.exports = {
     };
     run();
   },
+  findAll: (callback) => {
+    const query =
+      "SELECT so_phong, loai_phong, gia_phong, phong.mo_ta, so_luong_khach, tinh_trang, khach_san.ten FROM phong JOIN khach_san ON phong.ma_khach_san = khach_san.ma_khach_san";
+    db.query(query, (error, result) => {
+      if (error) throw error;
+      callback(result);
+    });
+  },
 };

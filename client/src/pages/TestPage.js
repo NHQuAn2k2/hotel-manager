@@ -14,15 +14,8 @@ export default function TestPage() {
   // const handleChange = (e) => {
   //   setData((pre) => ({ ...pre, [e.target.name]: e.target.value }));
   // };
-  // const handleChangeFile = (e) => {
-  //   setData((pre) => ({ ...pre, [e.target.name]: e.target.files[0] }));
-  // };
   // const handleThem = async () => {
-  //   const formData = new FormData();
-  //   formData.append("ten", data.ten);
-  //   formData.append("image", data.image);
-  //   formData.append("dia_chi", data.dia_chi);
-  //   formData.append("mo_ta", data.mo_ta);
+
   //   try {
   //     await axios.post(`${api}/hotel`, formData, {
   //       headers: {

@@ -45,7 +45,9 @@ export default function DialogRegister({ open, onClose = () => {} }) {
   };
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Dang Ky Tai Khoan</DialogTitle>
+      <DialogTitle fontWeight={"bold"} color={"Highlight"}>
+        Dang Ky Tai Khoan
+      </DialogTitle>
       <DialogContent
         sx={{
           width: "400px",
@@ -62,40 +64,37 @@ export default function DialogRegister({ open, onClose = () => {} }) {
         <TextField
           onChange={handleChangeInput}
           type="text"
-          label="Ten"
+          placeholder="Ten"
           name="ten"
-          variant="standard"
+          variant="outlined"
           fullWidth
         />
         <TextField
           onChange={handleChangeInput}
           type="email"
-          label="Email"
+          placeholder="Email"
           name="email"
-          variant="standard"
+          variant="outlined"
           fullWidth
         />
         <TextField
           onChange={handleChangeInput}
           type="password"
-          label="Mat Khau"
+          placeholder="Mat Khau"
           name="mat_khau"
-          variant="standard"
+          variant="outlined"
           fullWidth
         />
         <TextField
           onChange={handleChangeInput}
           type="number"
-          label="So Dien Thoai"
+          placeholder="So Dien Thoai"
           name="so_dien_thoai"
-          variant="standard"
+          variant="outlined"
           fullWidth
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} size="small" variant="outlined">
-          huy bo
-        </Button>
         <Button onClick={handleRegister} size="small" variant="contained">
           dang ky
         </Button>

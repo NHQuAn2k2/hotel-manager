@@ -8,3 +8,5 @@ export { default as ForgotPasswordPage } from "./ForgotPasswordPage";
 export { default as BookingStatusPage } from "./BookingStatusPage";
 export { default as ListBookingPage } from "./ListBookingPage";
 export { default as CancelPage } from "./CancelPage";
+export { default as AdminPage } from "./admin/AdminPage";
+export { default as AdminLoginPage } from "./admin/AdminLoginPage";

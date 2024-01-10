@@ -44,7 +44,7 @@ export default function ListBookingPage() {
       <Grid paddingTop={2} spacing={2} container>
         {listBooking.length > 0 ? (
           listBooking.map((item) => (
-            <Grid key={item.ma_dat_phong} item xs={6}>
+            <Grid key={item.ma_dat_phong} item xs={12}>
               <DialogCancelBooking
                 open={open}
                 onClose={() => setOpen(false)}
@@ -74,7 +74,7 @@ export default function ListBookingPage() {
                           item.trang_thai === "da xac nhan" ? "green" : "red"
                         }
                       >
-                        {item.trang_thai}
+                        {item.trang_thai.toUpperCase()}
                       </Typography>
                     </div>
                     <Typography fontWeight={"bold"}>
@@ -82,7 +82,6 @@ export default function ListBookingPage() {
                     </Typography>
                   </Stack>
                 </AccordionSummary>
-                <Divider />
                 <AccordionDetails>
                   <Typography marginBottom={2}>
                     <strong>Ma dat phong:</strong> {item.ma_dat_phong}

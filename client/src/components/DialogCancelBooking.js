@@ -6,6 +6,8 @@ import Button from "@mui/material/Button";
 import axios from "axios";
 import { api, token } from "../utils";
 import { useNavigate } from "react-router-dom";
+import { Typography } from "@mui/material";
+import WarningAmber from "@mui/icons-material/WarningAmber";
 export default function DialogCancelBooking({
   open,
   onClose = () => {},
@@ -29,7 +31,12 @@ export default function DialogCancelBooking({
   };
   return (
     <Dialog open={open}>
-      <DialogTitle>Ban co chac muon huy dat phong</DialogTitle>
+      <DialogTitle display={"flex"} alignItems={"center"} columnGap={1}>
+        <WarningAmber color="warning" />
+        <Typography variant="h6" color={"Highlight"}>
+          Ban co chac muon huy dat phong khong?
+        </Typography>
+      </DialogTitle>
       <DialogActions>
         <Button onClick={onClose} variant="outlined">
           khong, toi khong muon huy

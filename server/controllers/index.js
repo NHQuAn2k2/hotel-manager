@@ -95,16 +95,17 @@ module.exports = {
   },
   addHotel: (req, res) => {
     const data = req.body;
-    const dataFile = req.file.filename;
+    const dataFile = req.file?.filename;
     Hotel.save(data, dataFile);
     return res.status(200).json({ message: "them khach san thanh cong" });
   },
   editHotel: (req, res) => {
-    Hotel.updateById(req.body);
+    const dataFile = req.file?.filename;
+    Hotel.updateById(req.body, dataFile);
     return res.status(200).json({ message: "cap nhat khach san thanh cong" });
   },
   deleteHotel: (req, res) => {
-    Hotel.removeById(req.body);
+    Hotel.removeById(req.params);
     return res.status(200).json({ message: "xoa khach san thanh cong" });
   },
   searchHotel: (req, res) => {
@@ -269,5 +270,13 @@ module.exports = {
     }
     Customer.updatePassword({ ma_nguoi_dung, mat_khau_moi });
     return res.status(200).json({ message: "doi mat khau thanh cong!" });
+  },
+  getRoom: (req, res) => {
+    Room.findAll((data) => {
+      if (data.length <= 0) {
+        return res.status(400).json();
+      }
+      return res.status(200).json(data);
+    });
   },
 };

@@ -31,6 +31,7 @@ export default function Header() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     setBooking((pre) => ({ ...pre, ma_nguoi_dung: "" }));
+    navigate("/");
     window.location.reload();
   };
   return (
