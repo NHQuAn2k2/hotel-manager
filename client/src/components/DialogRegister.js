@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -19,10 +19,10 @@ export default function DialogRegister({ open, onClose = () => {} }) {
     so_dien_thoai: "",
   });
   const [error, setError] = useState({ message: "" });
-  const handleChangeInput = (e) => {
+  const handleChangeInput = useCallback((e) => {
     setRegister((pre) => ({ ...pre, [e.target.name]: e.target.value }));
-  };
-  const handleRegister = async () => {
+  }, []);
+  const handleRegister = useCallback(async () => {
     try {
       if (
         register.ten === "" ||
@@ -42,7 +42,8 @@ export default function DialogRegister({ open, onClose = () => {} }) {
     } catch (error) {
       setError(error.response.data);
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle fontWeight={"bold"} color={"Highlight"}>
