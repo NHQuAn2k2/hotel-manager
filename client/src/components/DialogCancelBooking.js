@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogActions from "@mui/material/DialogActions";
@@ -16,7 +16,7 @@ export default function DialogCancelBooking({
   ten_khach_san,
 }) {
   const navigate = useNavigate();
-  const handleCancelBooking = async () => {
+  const handleCancelBooking = useCallback(async () => {
     try {
       await axios.delete(
         `${api}/booking/${id}/email/${email}/hotel/${ten_khach_san}`,
@@ -28,7 +28,7 @@ export default function DialogCancelBooking({
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [email, id, navigate, ten_khach_san]);
   return (
     <Dialog open={open}>
       <DialogTitle display={"flex"} alignItems={"center"} columnGap={1}>
