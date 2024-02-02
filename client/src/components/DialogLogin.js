@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -14,11 +14,10 @@ export default function DialogLogin({ open, onClose = () => {} }) {
   const [login, setLogin] = useState({ email: "", mat_khau: "" });
   const [error, setError] = useState({ message: "" });
   const { setBooking } = useContext(BookingContext);
-  const handleChangeInput = (e) => {
+  const handleChangeInput = useCallback((e) => {
     setLogin((pre) => ({ ...pre, [e.target.name]: e.target.value }));
-  };
-  const handleLogin = async () => {
-    const regex = /^[a-zA-Z] +$/;
+  }, []);
+  const handleLogin = useCallback(async () => {
     try {
       if (login.email === "" || login.mat_khau === "") {
         setError({ message: "ban chua nhap day du thong tin!" });
@@ -33,7 +32,8 @@ export default function DialogLogin({ open, onClose = () => {} }) {
     } catch (error) {
       setError(error.response.data);
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle fontWeight={"bold"} color={"Highlight"}>
